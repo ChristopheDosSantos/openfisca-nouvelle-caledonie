@@ -101,5 +101,20 @@ FoyerFiscal = build_entity(
     ],
 )
 
+Entreprise = build_entity(
+    key="entreprise",
+    plural="entreprises",
+    label="Entreprise",
+    doc="Une entreprise employant des salariés.",
+    roles=[
+        {
+            "key": "salarie",
+            "plural": "salaries",
+            "label": "Salariés",
+            "doc": "Personnes rattachées à l'entreprise.",
+        },
+    ],
+)
 
-entities = [FoyerFiscal, Menage, Individu]
+
+entities = [FoyerFiscal, Menage, Individu, Entreprise]

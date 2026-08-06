@@ -1,0 +1,20 @@
+- name: Entreprise de 25 salariés est soumise à l'obligation
+  period: 2026
+  input:
+    effectif_salarie: [25]
+  output:
+    soumis_obligation_emploi_handicapes: [true]
+
+- name: Entreprise de 15 salariés n'est pas soumise
+  period: 2026
+  input:
+    effectif_salarie: [15]
+  output:
+    soumis_obligation_emploi_handicapes: [false]
+
+- name: Entreprise de 20 salariés n'est pas soumise
+  period: 2026
+  input:
+    effectif_salarie: [20]
+  output:
+    soumis_obligation_emploi_handicapes: [false]
