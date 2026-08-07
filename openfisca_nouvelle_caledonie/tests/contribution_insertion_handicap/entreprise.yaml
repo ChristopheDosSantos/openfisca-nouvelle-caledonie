@@ -4,6 +4,7 @@
     effectif_salarie: [25]
   output:
     soumis_obligation_emploi_handicapes: [true]
+    nb_beneficiaires_devant_etre_employes: [0.5]
 
 - name: Entreprise de 15 salariés n'est pas soumise
   period: 2026
@@ -11,6 +12,7 @@
     effectif_salarie: [15]
   output:
     soumis_obligation_emploi_handicapes: [false]
+    nb_beneficiaires_devant_etre_employes: [0]
 
 - name: Entreprise de 20 salariés n'est pas soumise
   period: 2026
@@ -18,3 +20,28 @@
     effectif_salarie: [20]
   output:
     soumis_obligation_emploi_handicapes: [false]
+    nb_beneficiaires_devant_etre_employes: [0]
+
+- name: Entreprise de 39 salariés applique le minimum a 0.5
+  period: 2026
+  input:
+    effectif_salarie: [39]
+  output:
+    soumis_obligation_emploi_handicapes: [true]
+    nb_beneficiaires_devant_etre_employes: [0.5]
+
+- name: Entreprise de 40 salariés donne exactement 1
+  period: 2026
+  input:
+    effectif_salarie: [40]
+  output:
+    soumis_obligation_emploi_handicapes: [true]
+    nb_beneficiaires_devant_etre_employes: [1]
+
+- name: Entreprise de 41 salariés est arrondie a l'entier inferieur
+  period: 2026
+  input:
+    effectif_salarie: [41]
+  output:
+    soumis_obligation_emploi_handicapes: [true]
+    nb_beneficiaires_devant_etre_employes: [1]

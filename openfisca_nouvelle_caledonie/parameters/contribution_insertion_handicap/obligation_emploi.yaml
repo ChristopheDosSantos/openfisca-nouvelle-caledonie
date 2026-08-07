@@ -1,0 +1,22 @@
+description: Paramètres de l'obligation d'emploi de travailleurs handicapés
+metadata:
+  short_label: OETH
+
+seuil_effectif:
+  description: Effectif strictement supérieur à ce seuil pour déclencher l'obligation
+  values:
+    2020-01-01:
+      value: 20
+
+taux_beneficiaires:
+  description: Taux de bénéficiaires à employer
+  values:
+    2020-01-01:
+      value: 0.025
+
+minimum_fraction:
+  description: Minimum appliqué quand le calcul est compris entre 0.5 inclus et 1 exclu
+  values:
+    2020-01-01:
+      value: 0.5
+

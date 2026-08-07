@@ -1,0 +1,251 @@
+### Variables globales
+@baseUrl = http://localhost:5000
+
+### Vérifier que l'API tourne
+GET {{baseUrl}}/spec
+
+### Cas 1: Entreprise de 25 salariés - doit être soumise
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "individu_1": {}
+  },
+  "entreprises": {
+    "entreprise_25": {
+      "salaries": ["individu_1"],
+      "effectif_salarie": {
+        "2026": 25
+      },
+      "soumis_obligation_emploi_handicapes": {
+        "2026": null
+      },
+      "nb_beneficiaires_devant_etre_employes": {
+        "2026": null
+      }
+    }
+  }
+}
+
+> {%
+    client.test("Entreprise de 25 salariés est soumise", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const result = response.body.entreprises["entreprise_25"].soumis_obligation_emploi_handicapes["2026"];
+        const expected = true;
+        client.assert(result === expected, "Attendu " + expected + ", reçu " + result);
+
+        const nbResult = response.body.entreprises["entreprise_25"].nb_beneficiaires_devant_etre_employes["2026"];
+        const nbExpected = 0.5;
+        client.assert(nbResult === nbExpected, "Attendu " + nbExpected + ", reçu " + nbResult);
+    });
+%}
+
+### Cas 2: Entreprise de 20 salariés - ne doit PAS être soumise (strictement supérieur à 20)
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "individu_2": {}
+  },
+  "entreprises": {
+    "entreprise_20": {
+      "salaries": ["individu_2"],
+      "effectif_salarie": {
+        "2026": 20
+      },
+      "soumis_obligation_emploi_handicapes": {
+        "2026": null
+      },
+      "nb_beneficiaires_devant_etre_employes": {
+        "2026": null
+      }
+    }
+  }
+}
+
+> {%
+    client.test("Entreprise de 20 salariés n'est pas soumise", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const result = response.body.entreprises["entreprise_20"].soumis_obligation_emploi_handicapes["2026"];
+        const expected = false;
+        client.assert(result === expected, "Attendu " + expected + ", reçu " + result);
+
+        const nbResult = response.body.entreprises["entreprise_20"].nb_beneficiaires_devant_etre_employes["2026"];
+        const nbExpected = 0;
+        client.assert(nbResult === nbExpected, "Attendu " + nbExpected + ", reçu " + nbResult);
+    });
+%}
+
+### Cas 3: Entreprise de 15 salariés - ne doit PAS être soumise
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "individu_3": {}
+  },
+  "entreprises": {
+    "entreprise_15": {
+      "salaries": ["individu_3"],
+      "effectif_salarie": {
+        "2026": 15
+      },
+      "soumis_obligation_emploi_handicapes": {
+        "2026": null
+      },
+      "nb_beneficiaires_devant_etre_employes": {
+        "2026": null
+      }
+    }
+  }
+}
+
+> {%
+    client.test("Entreprise de 15 salariés n'est pas soumise", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const result = response.body.entreprises["entreprise_15"].soumis_obligation_emploi_handicapes["2026"];
+        const expected = false;
+        client.assert(result === expected, "Attendu " + expected + ", reçu " + result);
+
+        const nbResult = response.body.entreprises["entreprise_15"].nb_beneficiaires_devant_etre_employes["2026"];
+        const nbExpected = 0;
+        client.assert(nbResult === nbExpected, "Attendu " + nbExpected + ", reçu " + nbResult);
+    });
+%}
+
+### Cas 4: Entreprise de 39 salariés - minimum de 0.5
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "individu_4": {}
+  },
+  "entreprises": {
+    "entreprise_39": {
+      "salaries": ["individu_4"],
+      "effectif_salarie": {
+        "2026": 39
+      },
+      "soumis_obligation_emploi_handicapes": {
+        "2026": null
+      },
+      "nb_beneficiaires_devant_etre_employes": {
+        "2026": null
+      }
+    }
+  }
+}
+
+> {%
+    client.test("Entreprise de 39 salariés applique le minimum", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const result = response.body.entreprises["entreprise_39"].soumis_obligation_emploi_handicapes["2026"];
+        const expected = true;
+        client.assert(result === expected, "Attendu " + expected + ", reçu " + result);
+
+        const nbResult = response.body.entreprises["entreprise_39"].nb_beneficiaires_devant_etre_employes["2026"];
+        const nbExpected = 0.5;
+        client.assert(nbResult === nbExpected, "Attendu " + nbExpected + ", reçu " + nbResult);
+    });
+%}
+
+### Cas 5: Entreprise de 40 salariés - resultat 1
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "individu_5": {}
+  },
+  "entreprises": {
+    "entreprise_40": {
+      "salaries": ["individu_5"],
+      "effectif_salarie": {
+        "2026": 40
+      },
+      "soumis_obligation_emploi_handicapes": {
+        "2026": null
+      },
+      "nb_beneficiaires_devant_etre_employes": {
+        "2026": null
+      }
+    }
+  }
+}
+
+> {%
+    client.test("Entreprise de 40 salariés donne 1", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const result = response.body.entreprises["entreprise_40"].soumis_obligation_emploi_handicapes["2026"];
+        const expected = true;
+        client.assert(result === expected, "Attendu " + expected + ", reçu " + result);
+
+        const nbResult = response.body.entreprises["entreprise_40"].nb_beneficiaires_devant_etre_employes["2026"];
+        const nbExpected = 1;
+        client.assert(nbResult === nbExpected, "Attendu " + nbExpected + ", reçu " + nbResult);
+    });
+%}
+
+### Cas 6: Entreprise de 41 salariés - arrondi a l'entier inferieur
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "individu_6": {}
+  },
+  "entreprises": {
+    "entreprise_41": {
+      "salaries": ["individu_6"],
+      "effectif_salarie": {
+        "2026": 41
+      },
+      "soumis_obligation_emploi_handicapes": {
+        "2026": null
+      },
+      "nb_beneficiaires_devant_etre_employes": {
+        "2026": null
+      }
+    }
+  }
+}
+
+> {%
+    client.test("Entreprise de 41 salariés est arrondie a l'entier inferieur", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const result = response.body.entreprises["entreprise_41"].soumis_obligation_emploi_handicapes["2026"];
+        const expected = true;
+        client.assert(result === expected, "Attendu " + expected + ", reçu " + result);
+
+        const nbResult = response.body.entreprises["entreprise_41"].nb_beneficiaires_devant_etre_employes["2026"];
+        const nbExpected = 1;
+        client.assert(nbResult === nbExpected, "Attendu " + nbExpected + ", reçu " + nbResult);
+    });
+%}
+
+### Test Trace
+POST {{baseUrl}}/trace
+Content-Type: application/json
+
+{
+  "individus": {
+    "individu_1": {}
+  },
+  "entreprises": {
+    "entreprise_25": {
+      "salaries": ["individu_1"],
+      "effectif_salarie": {
+        "2026": 25
+      },
+      "soumis_obligation_emploi_handicapes": {
+        "2026": null
+      },
+      "nb_beneficiaires_devant_etre_employes": {
+        "2026": null
+      }
+    }
+  }
+}
