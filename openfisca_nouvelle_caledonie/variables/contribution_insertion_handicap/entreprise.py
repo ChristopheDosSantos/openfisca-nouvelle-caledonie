@@ -1,5 +1,6 @@
 from openfisca_core.model_api import *
 from openfisca_nouvelle_caledonie.entities import Entreprise
+import numpy as np
 
 
 class effectif_salarie(Variable):
@@ -49,3 +50,16 @@ class nb_beneficiaires_devant_etre_employes(Variable):
         )
 
         return where(effectif > seuil, valeur_avec_minimum, 0)
+
+class somme_unites_beneficiaires(Variable):
+    value_type = float
+    entity = Entreprise
+    definition_period = YEAR
+    label = "Somme des unités de bénéficiaires, arrondie à 2 décimales par défaut"
+
+    def formula(entreprise, period):
+        unites_individuelles = entreprise.members('unite_beneficiaire', period)
+        total = entreprise.sum(unites_individuelles)
+
+        # équivalent de .setScale(2, RoundingMode.DOWN) en Java
+        return np.floor(total * 100) / 100

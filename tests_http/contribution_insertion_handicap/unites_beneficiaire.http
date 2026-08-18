@@ -1,0 +1,134 @@
+### Variables globales
+@baseUrl = http://localhost:5000
+
+### Cas 1 : Bénéficiaire choix A (CDI/CDD/intérim ≥ 6 mois, ≥ mi-temps) -> 1 unité
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "individu_a": {
+      "qualite_beneficiaire": {
+        "2026": "beneficiaire_a"
+      },
+      "unite_beneficiaire": {
+        "2026": null
+      }
+    }
+  }
+}
+
+> {%
+    client.test("Choix A compte pour 1 unité entière", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+
+        const result = response.body.individus["individu_a"].unite_beneficiaire["2026"];
+        const expected = 1.0;
+        client.assert(result === expected, "Attendu " + expected + ", reçu " + result);
+    });
+%}
+
+### Cas 2 : Bénéficiaire choix B (intérim < 6 mois) -> prorata des heures
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "individu_b": {
+      "qualite_beneficiaire": {
+        "2026": "beneficiaire_b"
+      },
+      "nb_heures_travaillees": {
+        "2026": 1200
+      },
+      "unite_beneficiaire": {
+        "2026": null
+      }
+    }
+  }
+}
+
+> {%
+    client.test("Choix B compte au prorata des heures travaillées", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+
+        const result = response.body.individus["individu_b"].unite_beneficiaire["2026"];
+        const expected = 1200 / 2028;
+        const tolerance = 0.0001;
+        client.assert(Math.abs(result - expected) < tolerance,
+            "Attendu ≈ " + expected + ", reçu " + result);
+    });
+%}
+
+### Cas 3 : Bénéficiaire choix B sans heure -> 0 unité
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "individu_b_zero": {
+      "qualite_beneficiaire": {
+        "2026": "beneficiaire_b"
+      },
+      "nb_heures_travaillees": {
+        "2026": 0
+      },
+      "unite_beneficiaire": {
+        "2026": null
+      }
+    }
+  }
+}
+
+> {%
+    client.test("Choix B sans heure compte pour 0 unité", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+
+        const result = response.body.individus["individu_b_zero"].unite_beneficiaire["2026"];
+        const expected = 0.0;
+        client.assert(result === expected, "Attendu " + expected + ", reçu " + result);
+    });
+%}
+
+### Cas 4 : Entreprise avec 2 bénéficiaires (A + B) -> somme arrondie à l'inférieur
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "beneficiaire_a": {
+      "qualite_beneficiaire": {
+        "2026": "beneficiaire_a"
+      }
+    },
+    "beneficiaire_b": {
+      "qualite_beneficiaire": {
+        "2026": "beneficiaire_b"
+      },
+      "nb_heures_travaillees": {
+        "2026": 500
+      }
+    }
+  },
+  "entreprises": {
+    "entreprise_test": {
+      "beneficiaires_handicap": ["beneficiaire_a", "beneficiaire_b"],
+      "somme_unites_beneficiaires": {
+        "2026": null
+      }
+    }
+  }
+}
+
+> {%
+    client.test("Somme des unités bénéficiaires arrondie à l'entier inférieur (2 décimales)", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+
+        const result = response.body.entreprises["entreprise_test"].somme_unites_beneficiaires["2026"];
+        // 1.0 (choix A) + 500/2028 = 1.0 + 0.246557... = 1.246557... -> floor 2 décimales = 1.24
+        const expected = 1.24;
+        const tolerance = 0.0001;
+        client.assert(Math.abs(result - expected) < tolerance,
+            "Attendu ≈ " + expected + ", reçu " + result);
+    });
+%}

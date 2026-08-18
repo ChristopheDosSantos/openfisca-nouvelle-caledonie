@@ -20,3 +20,9 @@ minimum_fraction:
     2020-01-01:
       value: 0.5
 
+heures_reference:
+  description: Nombre d'heures de référence annuel pour le calcul au prorata (choix B)
+  values:
+    2020-01-01:
+      value: 2028
+

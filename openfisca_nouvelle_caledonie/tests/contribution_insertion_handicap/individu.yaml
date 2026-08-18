@@ -1,0 +1,25 @@
+- name: Choix A compte pour 1 unite
+  period: 2026
+  input:
+    qualite_beneficiaire: [beneficiaire_a]
+  output:
+    unite_beneficiaire: [1]
+
+- name: Choix B compte au prorata des heures
+  period: 2026
+  absolute_error_margin: 0.000001
+  input:
+    qualite_beneficiaire: [beneficiaire_b]
+    nb_heures_travaillees: [1200]
+  output:
+    unite_beneficiaire: [0.591716]
+
+
+- name: Choix B sans heures saisies compte pour 0 unite
+  period: 2026
+  input:
+    qualite_beneficiaire: [beneficiaire_b]
+    nb_heures_travaillees: [0]
+  output:
+    unite_beneficiaire: [0]
+

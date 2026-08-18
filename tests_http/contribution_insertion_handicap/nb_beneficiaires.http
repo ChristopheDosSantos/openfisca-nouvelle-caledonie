@@ -14,7 +14,7 @@ Content-Type: application/json
   },
   "entreprises": {
     "entreprise_25": {
-      "salaries": ["individu_1"],
+      "beneficiaires_handicap": ["individu_1"],
       "effectif_salarie": {
         "2026": 25
       },
@@ -51,7 +51,7 @@ Content-Type: application/json
   },
   "entreprises": {
     "entreprise_20": {
-      "salaries": ["individu_2"],
+      "beneficiaires_handicap": ["individu_2"],
       "effectif_salarie": {
         "2026": 20
       },
@@ -88,7 +88,7 @@ Content-Type: application/json
   },
   "entreprises": {
     "entreprise_15": {
-      "salaries": ["individu_3"],
+      "beneficiaires_handicap": ["individu_3"],
       "effectif_salarie": {
         "2026": 15
       },
@@ -125,7 +125,7 @@ Content-Type: application/json
   },
   "entreprises": {
     "entreprise_39": {
-      "salaries": ["individu_4"],
+      "beneficiaires_handicap": ["individu_4"],
       "effectif_salarie": {
         "2026": 39
       },
@@ -162,7 +162,7 @@ Content-Type: application/json
   },
   "entreprises": {
     "entreprise_40": {
-      "salaries": ["individu_5"],
+      "beneficiaires_handicap": ["individu_5"],
       "effectif_salarie": {
         "2026": 40
       },
@@ -199,7 +199,7 @@ Content-Type: application/json
   },
   "entreprises": {
     "entreprise_41": {
-      "salaries": ["individu_6"],
+      "beneficiaires_handicap": ["individu_6"],
       "effectif_salarie": {
         "2026": 41
       },
@@ -236,7 +236,7 @@ Content-Type: application/json
   },
   "entreprises": {
     "entreprise_25": {
-      "salaries": ["individu_1"],
+      "beneficiaires_handicap": ["individu_1"],
       "effectif_salarie": {
         "2026": 25
       },

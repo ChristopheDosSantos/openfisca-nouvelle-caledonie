@@ -105,13 +105,13 @@ Entreprise = build_entity(
     key="entreprise",
     plural="entreprises",
     label="Entreprise",
-    doc="Une entreprise employant des salariés.",
+    doc="Une entreprise declarant les beneficiaires handicap rattaches pour la CIH.",
     roles=[
         {
-            "key": "salarie",
-            "plural": "salaries",
-            "label": "Salariés",
-            "doc": "Personnes rattachées à l'entreprise.",
+            "key": "beneficiaire_handicap",
+            "plural": "beneficiaires_handicap",
+            "label": "Beneficiaires handicap",
+            "doc": "Beneficiaires handicap declarés pour la CIH.",
         },
     ],
 )

@@ -45,3 +45,74 @@
   output:
     soumis_obligation_emploi_handicapes: [true]
     nb_beneficiaires_devant_etre_employes: [1]
+
+- name: Somme unites entreprise avec un seul beneficiaire A
+  period: 2026
+  input:
+    individus:
+      beneficiaire_a:
+        qualite_beneficiaire: beneficiaire_a
+    entreprises:
+      entreprise_test:
+        beneficiaires_handicap:
+          - beneficiaire_a
+  output:
+    entreprises:
+      entreprise_test:
+        somme_unites_beneficiaires: 1
+
+- name: Somme unites entreprise avec un seul beneficiaire B
+  period: 2026
+  absolute_error_margin: 0.000001
+  input:
+    individus:
+      beneficiaire_b:
+        qualite_beneficiaire: beneficiaire_b
+        nb_heures_travaillees: 507
+    entreprises:
+      entreprise_test:
+        beneficiaires_handicap:
+          - beneficiaire_b
+  output:
+    entreprises:
+      entreprise_test:
+        somme_unites_beneficiaires: 0.25
+
+- name: Somme unites entreprise mixte A B
+  period: 2026
+  input:
+    individus:
+      beneficiaire_a:
+        qualite_beneficiaire: beneficiaire_a
+      beneficiaire_b:
+        qualite_beneficiaire: beneficiaire_b
+        nb_heures_travaillees: 500
+    entreprises:
+      entreprise_test:
+        beneficiaires_handicap:
+          - beneficiaire_a
+          - beneficiaire_b
+  output:
+    entreprises:
+      entreprise_test:
+        somme_unites_beneficiaires: 1.24
+
+- name: Somme unites entreprise avec troncature a 2 decimales
+  period: 2026
+  input:
+    individus:
+      beneficiaire_a:
+        qualite_beneficiaire: beneficiaire_a
+      beneficiaire_b:
+        qualite_beneficiaire: beneficiaire_b
+        nb_heures_travaillees: 1000
+    entreprises:
+      entreprise_test:
+        beneficiaires_handicap:
+          - beneficiaire_a
+          - beneficiaire_b
+  output:
+    entreprises:
+      entreprise_test:
+        somme_unites_beneficiaires: 1.49
+
