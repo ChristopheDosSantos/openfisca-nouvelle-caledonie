@@ -1,0 +1,114 @@
+### Variables globales
+@baseUrl = http://localhost:5000
+
+### Cas 1 : Contrat services -> base nette / (diviseur * taux_horaire_smg)
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "individu_technique": {}
+  },
+  "contrats": {
+    "contrat_services": {
+      "signataires": [],
+      "type_contrat": {
+        "2026": "services"
+      },
+      "prix_ht_fourniture": {
+        "2026": 3000000
+      },
+      "cout_matiere_premiere": {
+        "2026": 500000
+      },
+      "unite_contrat": {
+        "2026": null
+      }
+    }
+  }
+}
+
+> {%
+    client.test("Contrat services calcule 1.25 unite", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+
+        const result = response.body.contrats["contrat_services"].unite_contrat["2026"];
+        const expected = 1.25;
+        client.assert(result === expected, "Attendu " + expected + ", recu " + result);
+    });
+%}
+
+### Cas 2 : Contrat disposition -> troncature a 2 decimales
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "individu_technique": {}
+  },
+  "contrats": {
+    "contrat_disposition": {
+      "signataires": [],
+      "type_contrat": {
+        "2026": "disposition"
+      },
+      "prix_ht_fourniture": {
+        "2026": 2499999
+      },
+      "cout_matiere_premiere": {
+        "2026": 0
+      },
+      "unite_contrat": {
+        "2026": null
+      }
+    }
+  }
+}
+
+> {%
+    client.test("Contrat disposition tronque a 1.24", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+
+        const result = response.body.contrats["contrat_disposition"].unite_contrat["2026"];
+        const expected = 1.24;
+        client.assert(result === expected, "Attendu " + expected + ", recu " + result);
+    });
+%}
+
+### Cas 3 : Contrat avec base nulle -> 0 unite
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "individu_technique": {}
+  },
+  "contrats": {
+    "contrat_nul": {
+      "signataires": [],
+      "type_contrat": {
+        "2026": "services"
+      },
+      "prix_ht_fourniture": {
+        "2026": 1200000
+      },
+      "cout_matiere_premiere": {
+        "2026": 1200000
+      },
+      "unite_contrat": {
+        "2026": null
+      }
+    }
+  }
+}
+
+> {%
+    client.test("Base nulle donne 0 unite", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+
+        const result = response.body.contrats["contrat_nul"].unite_contrat["2026"];
+        const expected = 0.0;
+        client.assert(result === expected, "Attendu " + expected + ", recu " + result);
+    });
+%}
+

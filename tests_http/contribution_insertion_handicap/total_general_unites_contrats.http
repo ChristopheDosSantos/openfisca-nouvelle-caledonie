@@ -1,0 +1,129 @@
+### Variables globales
+@baseUrl = http://localhost:5000
+
+### Cas 1 : total non plafonne (somme contrats < moitie des beneficiaires dus)
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "individu_technique": {}
+  },
+  "entreprises": {
+    "entreprise_non_plafonnee": {
+      "beneficiaires_handicap": [],
+      "effectif_salarie": {
+        "2026": 100
+      },
+      "somme_unites_contrats_services": {
+        "2026": 0.4
+      },
+      "somme_unites_contrats_disposition": {
+        "2026": 0.5
+      },
+      "nb_beneficiaires_devant_etre_employes": {
+        "2026": null
+      },
+      "total_general_unites_contrats": {
+        "2026": null
+      }
+    }
+  }
+}
+
+> {%
+    client.test("Total unites contrats non plafonne", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+
+        const nbDus = response.body.entreprises["entreprise_non_plafonnee"].nb_beneficiaires_devant_etre_employes["2026"];
+        const total = response.body.entreprises["entreprise_non_plafonnee"].total_general_unites_contrats["2026"];
+
+        client.assert(nbDus === 2.0, "Beneficiaires dus attendus 2.0, recu " + nbDus);
+        client.assert(total === 0.9, "Total attendu 0.9, recu " + total);
+    });
+%}
+
+### Cas 2 : total plafonne a la moitie des beneficiaires dus
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "individu_technique": {}
+  },
+  "entreprises": {
+    "entreprise_plafonnee": {
+      "beneficiaires_handicap": [],
+      "effectif_salarie": {
+        "2026": 120
+      },
+      "somme_unites_contrats_services": {
+        "2026": 1.1
+      },
+      "somme_unites_contrats_disposition": {
+        "2026": 0.8
+      },
+      "nb_beneficiaires_devant_etre_employes": {
+        "2026": null
+      },
+      "total_general_unites_contrats": {
+        "2026": null
+      }
+    }
+  }
+}
+
+> {%
+    client.test("Total unites contrats plafonne", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+
+        const nbDus = response.body.entreprises["entreprise_plafonnee"].nb_beneficiaires_devant_etre_employes["2026"];
+        const total = response.body.entreprises["entreprise_plafonnee"].total_general_unites_contrats["2026"];
+
+        client.assert(nbDus === 3.0, "Beneficiaires dus attendus 3.0, recu " + nbDus);
+        client.assert(total === 1.5, "Total attendu 1.5, recu " + total);
+    });
+%}
+
+### Cas 3 : entreprise non soumise -> total a 0
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "individu_technique": {}
+  },
+  "entreprises": {
+    "entreprise_non_soumise": {
+      "beneficiaires_handicap": [],
+      "effectif_salarie": {
+        "2026": 20
+      },
+      "somme_unites_contrats_services": {
+        "2026": 1.2
+      },
+      "somme_unites_contrats_disposition": {
+        "2026": 0.7
+      },
+      "nb_beneficiaires_devant_etre_employes": {
+        "2026": null
+      },
+      "total_general_unites_contrats": {
+        "2026": null
+      }
+    }
+  }
+}
+
+> {%
+    client.test("Entreprise non soumise donne 0", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+
+        const nbDus = response.body.entreprises["entreprise_non_soumise"].nb_beneficiaires_devant_etre_employes["2026"];
+        const total = response.body.entreprises["entreprise_non_soumise"].total_general_unites_contrats["2026"];
+
+        client.assert(nbDus === 0.0, "Beneficiaires dus attendus 0.0, recu " + nbDus);
+        client.assert(total === 0.0, "Total attendu 0.0, recu " + total);
+    });
+%}
+

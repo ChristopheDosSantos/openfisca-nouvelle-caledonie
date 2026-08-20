@@ -63,3 +63,32 @@ class somme_unites_beneficiaires(Variable):
 
         # équivalent de .setScale(2, RoundingMode.DOWN) en Java
         return np.floor(total * 100) / 100
+
+class somme_unites_contrats_services(Variable):
+    value_type = float
+    entity = Entreprise
+    definition_period = YEAR
+    label = "Somme des unités des contrats SERVICES (calculée en amont, agrégée depuis Contrat)"
+
+class somme_unites_contrats_disposition(Variable):
+    value_type = float
+    entity = Entreprise
+    definition_period = YEAR
+    label = "Somme des unités des contrats DISPOSITION (calculée en amont, agrégée depuis Contrat)"
+
+
+class total_general_unites_contrats(Variable):
+    value_type = float
+    entity = Entreprise
+    definition_period = YEAR
+    label = "Total des unités contrats, plafonné à la moitié des bénéficiaires dus"
+
+    def formula(entreprise, period):
+        services = entreprise('somme_unites_contrats_services', period)
+        disposition = entreprise('somme_unites_contrats_disposition', period)
+        nb_beneficiaires_dus = entreprise('nb_beneficiaires_devant_etre_employes', period)
+
+        somme_totale = services + disposition
+        moitie = np.floor(nb_beneficiaires_dus / 2 * 100) / 100
+
+        return np.minimum(somme_totale, moitie)

@@ -1,0 +1,27 @@
+- name: Contrat services calcule les unites sur la base nette
+  period: 2026
+  input:
+    type_contrat: [services]
+    prix_ht_fourniture: [3000000]
+    cout_matiere_premiere: [500000]
+  output:
+    unite_contrat: [1.25]
+
+- name: Contrat disposition applique la troncature a 2 decimales
+  period: 2026
+  input:
+    type_contrat: [disposition]
+    prix_ht_fourniture: [2499999]
+    cout_matiere_premiere: [0]
+  output:
+    unite_contrat: [1.24]
+
+- name: Contrat avec base nulle donne 0 unite
+  period: 2026
+  input:
+    type_contrat: [services]
+    prix_ht_fourniture: [1200000]
+    cout_matiere_premiere: [1200000]
+  output:
+    unite_contrat: [0]
+

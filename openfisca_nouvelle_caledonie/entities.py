@@ -116,5 +116,25 @@ Entreprise = build_entity(
     ],
 )
 
+# entities.py
+Contrat = build_entity(
+    key="contrat",
+    plural="contrats",
+    label="Contrat",
+    doc=(
+        "Contrat de sous-traitance (SERVICES) ou de mise à disposition de personnel "
+        "(DISPOSITION) pris en compte pour la CIH. Aucune personne n'y est rattachée : "
+        "seul le montant du contrat compte pour le calcul."
+    ),
+    roles=[
+        {
+            "key": "signataire",
+            "plural": "signataires",
+            "label": "Signataires",
+            "doc": "Role technique requis par OpenFisca pour les entites de groupe.",
+        },
+    ],
+)
 
-entities = [FoyerFiscal, Menage, Individu, Entreprise]
+
+entities = [FoyerFiscal, Menage, Individu, Entreprise, Contrat]

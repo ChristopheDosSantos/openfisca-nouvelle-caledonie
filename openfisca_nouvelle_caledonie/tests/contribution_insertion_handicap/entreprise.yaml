@@ -116,3 +116,33 @@
       entreprise_test:
         somme_unites_beneficiaires: 1.49
 
+- name: Total unites contrats sans plafonnement
+  period: 2026
+  input:
+    effectif_salarie: [100]
+    somme_unites_contrats_services: [0.4]
+    somme_unites_contrats_disposition: [0.5]
+  output:
+    nb_beneficiaires_devant_etre_employes: [2]
+    total_general_unites_contrats: [0.9]
+
+- name: Total unites contrats plafonne a la moitie des beneficiaires dus
+  period: 2026
+  input:
+    effectif_salarie: [120]
+    somme_unites_contrats_services: [1.1]
+    somme_unites_contrats_disposition: [0.8]
+  output:
+    nb_beneficiaires_devant_etre_employes: [3]
+    total_general_unites_contrats: [1.5]
+
+- name: Total unites contrats nul si entreprise non soumise
+  period: 2026
+  input:
+    effectif_salarie: [20]
+    somme_unites_contrats_services: [1.2]
+    somme_unites_contrats_disposition: [0.7]
+  output:
+    nb_beneficiaires_devant_etre_employes: [0]
+    total_general_unites_contrats: [0]
+

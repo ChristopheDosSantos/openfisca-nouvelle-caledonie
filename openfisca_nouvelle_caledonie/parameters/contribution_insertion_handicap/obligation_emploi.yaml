@@ -26,3 +26,20 @@ heures_reference:
     2020-01-01:
       value: 2028
 
+diviseur_unite_contrat:
+  description: Diviseur utilisé pour convertir un montant de contrat en unités
+  values:
+    2020-01-01:
+      value: 2000
+
+taux_horaire_smg:
+  description: Taux horaire du Salaire Minimum Garanti utilisé pour la CIH
+  values:
+    2026-08-01:
+      value: 1000,08    # à ajuster avec la vraie valeur
+
+taux_horaire_smag:
+  description: Taux horaire du Salaire Minimum Garanti Agricole utilisé pour la CIH
+  values:
+    2026-08-01:
+      value: 850,07    # à ajuster avec la vraie valeur
