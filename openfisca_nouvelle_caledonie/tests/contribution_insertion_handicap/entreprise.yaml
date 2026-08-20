@@ -146,3 +146,39 @@
     nb_beneficiaires_devant_etre_employes: [0]
     total_general_unites_contrats: [0]
 
+- name: Beneficiaires manquants avec troncature a 2 decimales
+  period: 2026
+  input:
+    effectif_salarie: [100]
+    somme_unites_beneficiaires: [1.23]
+    somme_unites_contrats_services: [0.5]
+    somme_unites_contrats_disposition: [0]
+  output:
+    nb_beneficiaires_devant_etre_employes: [2]
+    total_general_unites_contrats: [0.5]
+    beneficiaires_manquants: [0.26]
+
+- name: Beneficiaires manquants nuls si total atteint le besoin
+  period: 2026
+  input:
+    effectif_salarie: [100]
+    somme_unites_beneficiaires: [1.2]
+    somme_unites_contrats_services: [0.8]
+    somme_unites_contrats_disposition: [0]
+  output:
+    nb_beneficiaires_devant_etre_employes: [2]
+    total_general_unites_contrats: [0.8]
+    beneficiaires_manquants: [0]
+
+- name: Beneficiaires manquants nuls si total depasse le besoin
+  period: 2026
+  input:
+    effectif_salarie: [100]
+    somme_unites_beneficiaires: [1.9]
+    somme_unites_contrats_services: [0.8]
+    somme_unites_contrats_disposition: [0]
+  output:
+    nb_beneficiaires_devant_etre_employes: [2]
+    total_general_unites_contrats: [0.8]
+    beneficiaires_manquants: [0]
+

@@ -92,3 +92,21 @@ class total_general_unites_contrats(Variable):
         moitie = np.floor(nb_beneficiaires_dus / 2 * 100) / 100
 
         return np.minimum(somme_totale, moitie)
+
+
+class beneficiaires_manquants(Variable):
+    value_type = float
+    entity = Entreprise
+    definition_period = YEAR
+    label = "Beneficiaires manquants apres prise en compte des unites"
+
+    def formula(entreprise, period):
+        unites_beneficiaires = entreprise('somme_unites_beneficiaires', period)
+        unites_contrats = entreprise('total_general_unites_contrats', period)
+        nb_beneficiaires_dus = entreprise('nb_beneficiaires_devant_etre_employes', period)
+
+        total_unites = unites_beneficiaires + unites_contrats
+        manque = nb_beneficiaires_dus - total_unites
+        manque_tronque = np.floor(manque * 100) / 100
+
+        return np.maximum(manque_tronque, 0)

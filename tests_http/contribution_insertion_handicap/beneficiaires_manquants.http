@@ -1,0 +1,123 @@
+### Variables globales
+@baseUrl = http://localhost:5000
+
+### Cas 1 : beneficaires manquants positifs avec troncature a 2 decimales
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "individu_technique": {}
+  },
+  "entreprises": {
+    "entreprise_manquants": {
+      "beneficiaires_handicap": [],
+      "effectif_salarie": {
+        "2026": 100
+      },
+      "somme_unites_beneficiaires": {
+        "2026": 1.23
+      },
+      "somme_unites_contrats_services": {
+        "2026": 0.5
+      },
+      "somme_unites_contrats_disposition": {
+        "2026": 0
+      },
+      "beneficiaires_manquants": {
+        "2026": null
+      }
+    }
+  }
+}
+
+> {%
+    client.test("Beneficiaires manquants tronques a 0.26", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+
+        const result = response.body.entreprises["entreprise_manquants"].beneficiaires_manquants["2026"];
+        const expected = 0.26;
+        client.assert(result === expected, "Attendu " + expected + ", recu " + result);
+    });
+%}
+
+### Cas 2 : total atteint le besoin -> 0 manquant
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "individu_technique": {}
+  },
+  "entreprises": {
+    "entreprise_egalite": {
+      "beneficiaires_handicap": [],
+      "effectif_salarie": {
+        "2026": 100
+      },
+      "somme_unites_beneficiaires": {
+        "2026": 1.2
+      },
+      "somme_unites_contrats_services": {
+        "2026": 0.8
+      },
+      "somme_unites_contrats_disposition": {
+        "2026": 0
+      },
+      "beneficiaires_manquants": {
+        "2026": null
+      }
+    }
+  }
+}
+
+> {%
+    client.test("Aucun beneficiaire manquant a egalite", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+
+        const result = response.body.entreprises["entreprise_egalite"].beneficiaires_manquants["2026"];
+        const expected = 0.0;
+        client.assert(result === expected, "Attendu " + expected + ", recu " + result);
+    });
+%}
+
+### Cas 3 : total depasse le besoin -> 0 manquant
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "individu_technique": {}
+  },
+  "entreprises": {
+    "entreprise_depassement": {
+      "beneficiaires_handicap": [],
+      "effectif_salarie": {
+        "2026": 100
+      },
+      "somme_unites_beneficiaires": {
+        "2026": 1.9
+      },
+      "somme_unites_contrats_services": {
+        "2026": 0.8
+      },
+      "somme_unites_contrats_disposition": {
+        "2026": 0
+      },
+      "beneficiaires_manquants": {
+        "2026": null
+      }
+    }
+  }
+}
+
+> {%
+    client.test("Aucun beneficiaire manquant en depassement", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+
+        const result = response.body.entreprises["entreprise_depassement"].beneficiaires_manquants["2026"];
+        const expected = 0.0;
+        client.assert(result === expected, "Attendu " + expected + ", recu " + result);
+    });
+%}
+
