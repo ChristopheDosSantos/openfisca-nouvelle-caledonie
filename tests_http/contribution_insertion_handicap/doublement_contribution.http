@@ -1,0 +1,322 @@
+### Variables globales
+@baseUrl = http://localhost:5000
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 1 : Éligibilité bénéficiaires — aucun emploi jamais → éligible
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "e_elig_benef": {
+      "beneficiaires_handicap": [],
+      "a_employe_beneficiaires_annee_en_cours":    { "2026": false },
+      "a_employe_beneficiaires_annees_precedentes":{ "2026": false },
+      "eligible_doublement_cotisation_beneficiaire":{ "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Aucun emploi jamais : eligible_doublement_beneficiaire = true", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const result = response.body.entreprises["e_elig_benef"]
+            .eligible_doublement_cotisation_beneficiaire["2026"];
+        client.assert(result === true, "Attendu true, recu " + result);
+    });
+%}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 2 : Éligibilité bénéficiaires — emploi cette année → non éligible
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "e_non_elig_benef_cur": {
+      "beneficiaires_handicap": [],
+      "a_employe_beneficiaires_annee_en_cours":    { "2026": true },
+      "a_employe_beneficiaires_annees_precedentes":{ "2026": false },
+      "eligible_doublement_cotisation_beneficiaire":{ "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Emploi annee en cours : eligible_doublement_beneficiaire = false", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const result = response.body.entreprises["e_non_elig_benef_cur"]
+            .eligible_doublement_cotisation_beneficiaire["2026"];
+        client.assert(result === false, "Attendu false, recu " + result);
+    });
+%}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 3 : Éligibilité bénéficiaires — emploi années précédentes → non éligible
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "e_non_elig_benef_prev": {
+      "beneficiaires_handicap": [],
+      "a_employe_beneficiaires_annee_en_cours":    { "2026": false },
+      "a_employe_beneficiaires_annees_precedentes":{ "2026": true },
+      "eligible_doublement_cotisation_beneficiaire":{ "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Emploi annees precedentes : eligible_doublement_beneficiaire = false", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const result = response.body.entreprises["e_non_elig_benef_prev"]
+            .eligible_doublement_cotisation_beneficiaire["2026"];
+        client.assert(result === false, "Attendu false, recu " + result);
+    });
+%}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 4 : Éligibilité contrats — aucun contrat jamais → éligible
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "e_elig_contrat": {
+      "beneficiaires_handicap": [],
+      "a_contracte_annee_en_cours":    { "2026": false },
+      "a_contracte_annees_precedentes":{ "2026": false },
+      "eligible_doublement_cotisation_contrat":{ "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Aucun contrat jamais : eligible_doublement_contrat = true", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const result = response.body.entreprises["e_elig_contrat"]
+            .eligible_doublement_cotisation_contrat["2026"];
+        client.assert(result === true, "Attendu true, recu " + result);
+    });
+%}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 5 : Éligibilité contrats — contrat années précédentes → non éligible
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "e_non_elig_contrat_prev": {
+      "beneficiaires_handicap": [],
+      "a_contracte_annee_en_cours":    { "2026": false },
+      "a_contracte_annees_precedentes":{ "2026": true },
+      "eligible_doublement_cotisation_contrat":{ "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Contrat annees precedentes : eligible_doublement_contrat = false", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const result = response.body.entreprises["e_non_elig_contrat_prev"]
+            .eligible_doublement_cotisation_contrat["2026"];
+        client.assert(result === false, "Attendu false, recu " + result);
+    });
+%}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 6 : Éligibilité globale — les deux conditions remplies → éligible
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "e_elig_global": {
+      "beneficiaires_handicap": [],
+      "a_employe_beneficiaires_annee_en_cours":    { "2026": false },
+      "a_employe_beneficiaires_annees_precedentes":{ "2026": false },
+      "a_contracte_annee_en_cours":                { "2026": false },
+      "a_contracte_annees_precedentes":            { "2026": false },
+      "eligible_doublement_cotisation_beneficiaire":{ "2026": null },
+      "eligible_doublement_cotisation_contrat":    { "2026": null },
+      "eligible_doublement_cotisation":            { "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Deux conditions remplies : eligible_doublement_cotisation = true", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const e = response.body.entreprises["e_elig_global"];
+        client.assert(e.eligible_doublement_cotisation_beneficiaire["2026"] === true,
+            "Eligible beneficiaire attendu true");
+        client.assert(e.eligible_doublement_cotisation_contrat["2026"] === true,
+            "Eligible contrat attendu true");
+        client.assert(e.eligible_doublement_cotisation["2026"] === true,
+            "Eligible global attendu true");
+    });
+%}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 7 : Éligibilité globale — bénéficiaires bloquent → non éligible
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "e_non_elig_benef_bloque": {
+      "beneficiaires_handicap": [],
+      "a_employe_beneficiaires_annee_en_cours":    { "2026": true },
+      "a_employe_beneficiaires_annees_precedentes":{ "2026": false },
+      "a_contracte_annee_en_cours":                { "2026": false },
+      "a_contracte_annees_precedentes":            { "2026": false },
+      "eligible_doublement_cotisation":            { "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Beneficiaires bloquent : eligible_doublement_cotisation = false", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const result = response.body.entreprises["e_non_elig_benef_bloque"]
+            .eligible_doublement_cotisation["2026"];
+        client.assert(result === false, "Attendu false, recu " + result);
+    });
+%}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 8 : Montant doublement — éligible → contribution × 2 tronqué à l'entier
+###   effectif=50, manquants=1, SMG → contribution=400032.00
+###   doublement = floor(400032.00 × 2) = 800064
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "e_doublement_eligible": {
+      "beneficiaires_handicap": [],
+      "effectif_salarie":                          { "2026": 50 },
+      "somme_unites_beneficiaires":                { "2026": 0 },
+      "somme_unites_contrats_services":            { "2026": 0 },
+      "somme_unites_contrats_disposition":         { "2026": 0 },
+      "regime_smag":                               { "2026": false },
+      "a_employe_beneficiaires_annee_en_cours":    { "2026": false },
+      "a_employe_beneficiaires_annees_precedentes":{ "2026": false },
+      "a_contracte_annee_en_cours":                { "2026": false },
+      "a_contracte_annees_precedentes":            { "2026": false },
+      "contribution_avant_depenses_deductibles":   { "2026": null },
+      "montant_doublement_contribution":           { "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Eligible : montant doublement = 800064", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const e = response.body.entreprises["e_doublement_eligible"];
+
+        const contrib = e.contribution_avant_depenses_deductibles["2026"];
+        client.assert(contrib === 400032.0,
+            "Contribution attendue : 400032, recu " + contrib);
+
+        const doublement = e.montant_doublement_contribution["2026"];
+        client.assert(doublement === 800064.0,
+            "Doublement attendu : 800064, recu " + doublement);
+    });
+%}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 9 : Montant doublement — non éligible → 0
+###   Même effectif, mais emploi cette année → doublement = 0
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "e_doublement_non_eligible": {
+      "beneficiaires_handicap": [],
+      "effectif_salarie":                          { "2026": 50 },
+      "somme_unites_beneficiaires":                { "2026": 0 },
+      "somme_unites_contrats_services":            { "2026": 0 },
+      "somme_unites_contrats_disposition":         { "2026": 0 },
+      "regime_smag":                               { "2026": false },
+      "a_employe_beneficiaires_annee_en_cours":    { "2026": true },
+      "a_employe_beneficiaires_annees_precedentes":{ "2026": false },
+      "a_contracte_annee_en_cours":                { "2026": false },
+      "a_contracte_annees_precedentes":            { "2026": false },
+      "montant_doublement_contribution":           { "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Non eligible : montant doublement = 0", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const doublement = response.body.entreprises["e_doublement_non_eligible"]
+            .montant_doublement_contribution["2026"];
+        client.assert(doublement === 0, "Attendu 0, recu " + doublement);
+    });
+%}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 10 : Troncature à l'entier — contribution avec décimales
+###   beneficiaires_manquants=0.99, effectif=50, SMG
+###   contribution = floor(0.99 × 400 × 1000.08 × 100) / 100 = 396031.68
+###   doublement   = floor(396031.68 × 2) = floor(792063.36) = 792063
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "e_troncature": {
+      "beneficiaires_handicap": [],
+      "effectif_salarie":                          { "2026": 50 },
+      "beneficiaires_manquants":                   { "2026": 0.99 },
+      "regime_smag":                               { "2026": false },
+      "a_employe_beneficiaires_annee_en_cours":    { "2026": false },
+      "a_employe_beneficiaires_annees_precedentes":{ "2026": false },
+      "a_contracte_annee_en_cours":                { "2026": false },
+      "a_contracte_annees_precedentes":            { "2026": false },
+      "contribution_avant_depenses_deductibles":   { "2026": null },
+      "montant_doublement_contribution":           { "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Troncature entier : contribution=396031.68, doublement=792063", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const e = response.body.entreprises["e_troncature"];
+
+        const contrib = e.contribution_avant_depenses_deductibles["2026"];
+        client.assert(contrib === 396031.68,
+            "Contribution attendue : 396031.68, recu " + contrib);
+
+        const doublement = e.montant_doublement_contribution["2026"];
+        client.assert(doublement === 792063.0,
+            "Doublement attendu : 792063, recu " + doublement);
+    });
+%}
+

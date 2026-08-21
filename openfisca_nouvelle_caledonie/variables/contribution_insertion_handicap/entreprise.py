@@ -174,3 +174,109 @@ class contribution_avant_depenses_deductibles(Variable):
 
         return where(exonere, 0.0, montant)
 
+
+# ── Étape I : Doublement de la contribution ───────────────────────────────────
+
+class a_employe_beneficiaires_annee_en_cours(Variable):
+    value_type = bool
+    entity = Entreprise
+    definition_period = YEAR
+    label = "L'entreprise a employé des bénéficiaires handicapés l'année en cours"
+    # INPUT — correspond à emploisAnneeEnCours dans le domaine Java
+
+
+class a_employe_beneficiaires_annees_precedentes(Variable):
+    value_type = bool
+    entity = Entreprise
+    definition_period = YEAR
+    label = "L'entreprise a employé des bénéficiaires handicapés lors d'années précédentes"
+    # INPUT — correspond à emploisAnneesPrecedentes dans le domaine Java
+
+
+class eligible_doublement_cotisation_beneficiaire(Variable):
+    value_type = bool
+    entity = Entreprise
+    definition_period = YEAR
+    label = (
+        "Éligibilité au doublement de la cotisation côté bénéficiaires "
+        "(vrai si aucun emploi ni cette année ni les années précédentes)"
+    )
+
+    def formula(entreprise, period):
+        # Éligible seulement si l'entreprise n'a JAMAIS employé de bénéficiaires
+        emplois_en_cours = entreprise("a_employe_beneficiaires_annee_en_cours", period)
+        emplois_precedents = entreprise("a_employe_beneficiaires_annees_precedentes", period)
+        return ~emplois_en_cours & ~emplois_precedents
+
+
+class a_contracte_annee_en_cours(Variable):
+    value_type = bool
+    entity = Entreprise
+    definition_period = YEAR
+    label = (
+        "L'entreprise a conclu des contrats de sous-traitance ou de mise à disposition "
+        "l'année en cours"
+    )
+    # INPUT — correspond à contratsAnneeEnCours dans le domaine Java
+
+
+class a_contracte_annees_precedentes(Variable):
+    value_type = bool
+    entity = Entreprise
+    definition_period = YEAR
+    label = (
+        "L'entreprise a conclu des contrats de sous-traitance ou de mise à disposition "
+        "lors d'années précédentes"
+    )
+    # INPUT — correspond à contratsAnneesPrecedentes dans le domaine Java
+
+
+class eligible_doublement_cotisation_contrat(Variable):
+    value_type = bool
+    entity = Entreprise
+    definition_period = YEAR
+    label = (
+        "Éligibilité au doublement de la cotisation côté contrats "
+        "(vrai si aucun contrat ni cette année ni les années précédentes)"
+    )
+
+    def formula(entreprise, period):
+        # Éligible seulement si l'entreprise n'a JAMAIS contracté
+        contrats_en_cours = entreprise("a_contracte_annee_en_cours", period)
+        contrats_precedents = entreprise("a_contracte_annees_precedentes", period)
+        return ~contrats_en_cours & ~contrats_precedents
+
+
+class eligible_doublement_cotisation(Variable):
+    value_type = bool
+    entity = Entreprise
+    definition_period = YEAR
+    label = (
+        "Éligibilité globale au doublement de la cotisation "
+        "(bénéficiaires ET contrats doivent être tous deux éligibles)"
+    )
+
+    def formula(entreprise, period):
+        elig_benef = entreprise("eligible_doublement_cotisation_beneficiaire", period)
+        elig_contrat = entreprise("eligible_doublement_cotisation_contrat", period)
+        return elig_benef & elig_contrat
+
+
+class montant_doublement_contribution(Variable):
+    value_type = float
+    entity = Entreprise
+    definition_period = YEAR
+    label = (
+        "Étape I — Montant du doublement de la contribution "
+        "(contribution × 2, tronqué à l'entier inférieur ; 0 si non éligible)"
+    )
+
+    def formula(entreprise, period):
+        eligible = entreprise("eligible_doublement_cotisation", period)
+        contribution = entreprise("contribution_avant_depenses_deductibles", period)
+
+        # × 2 puis RoundingMode.DOWN vers l'entier (setScale(0, DOWN) en Java)
+        montant = np.floor(contribution * 2)
+
+        return where(eligible, montant, 0.0)
+

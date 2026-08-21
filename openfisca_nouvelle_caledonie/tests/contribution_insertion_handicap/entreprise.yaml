@@ -246,3 +246,129 @@
   output:
     beneficiaires_manquants: [0]
     contribution_avant_depenses_deductibles: [0]
+
+# ── Étape I : doublement de la contribution ───────────────────────────────────
+
+- name: Doublement I - eligible beneficiaires (aucun emploi jamais)
+  period: 2026
+  input:
+    a_employe_beneficiaires_annee_en_cours: [false]
+    a_employe_beneficiaires_annees_precedentes: [false]
+  output:
+    eligible_doublement_cotisation_beneficiaire: [true]
+
+- name: Doublement I - non eligible beneficiaires si emploi annee en cours
+  period: 2026
+  input:
+    a_employe_beneficiaires_annee_en_cours: [true]
+    a_employe_beneficiaires_annees_precedentes: [false]
+  output:
+    eligible_doublement_cotisation_beneficiaire: [false]
+
+- name: Doublement I - non eligible beneficiaires si emploi annees precedentes
+  period: 2026
+  input:
+    a_employe_beneficiaires_annee_en_cours: [false]
+    a_employe_beneficiaires_annees_precedentes: [true]
+  output:
+    eligible_doublement_cotisation_beneficiaire: [false]
+
+- name: Doublement I - eligible contrats (aucun contrat jamais)
+  period: 2026
+  input:
+    a_contracte_annee_en_cours: [false]
+    a_contracte_annees_precedentes: [false]
+  output:
+    eligible_doublement_cotisation_contrat: [true]
+
+- name: Doublement I - non eligible contrats si contrat annee en cours
+  period: 2026
+  input:
+    a_contracte_annee_en_cours: [true]
+    a_contracte_annees_precedentes: [false]
+  output:
+    eligible_doublement_cotisation_contrat: [false]
+
+- name: Doublement I - eligible global si les deux conditions remplies
+  period: 2026
+  input:
+    a_employe_beneficiaires_annee_en_cours: [false]
+    a_employe_beneficiaires_annees_precedentes: [false]
+    a_contracte_annee_en_cours: [false]
+    a_contracte_annees_precedentes: [false]
+  output:
+    eligible_doublement_cotisation_beneficiaire: [true]
+    eligible_doublement_cotisation_contrat: [true]
+    eligible_doublement_cotisation: [true]
+
+- name: Doublement I - non eligible global si beneficiaires bloquent
+  period: 2026
+  input:
+    a_employe_beneficiaires_annee_en_cours: [true]
+    a_employe_beneficiaires_annees_precedentes: [false]
+    a_contracte_annee_en_cours: [false]
+    a_contracte_annees_precedentes: [false]
+  output:
+    eligible_doublement_cotisation: [false]
+
+- name: Doublement I - non eligible global si contrats bloquent
+  period: 2026
+  input:
+    a_employe_beneficiaires_annee_en_cours: [false]
+    a_employe_beneficiaires_annees_precedentes: [false]
+    a_contracte_annee_en_cours: [false]
+    a_contracte_annees_precedentes: [true]
+  output:
+    eligible_doublement_cotisation: [false]
+
+- name: Doublement I - montant = contribution x2 tronque si eligible
+  period: 2026
+  # contribution=400032.00 -> doublement=floor(400032*2)=800064
+  input:
+    effectif_salarie: [50]
+    somme_unites_beneficiaires: [0]
+    somme_unites_contrats_services: [0]
+    somme_unites_contrats_disposition: [0]
+    regime_smag: [false]
+    a_employe_beneficiaires_annee_en_cours: [false]
+    a_employe_beneficiaires_annees_precedentes: [false]
+    a_contracte_annee_en_cours: [false]
+    a_contracte_annees_precedentes: [false]
+  output:
+    eligible_doublement_cotisation: [true]
+    contribution_avant_depenses_deductibles: [400032.00]
+    montant_doublement_contribution: [800064]
+
+- name: Doublement I - montant = 0 si non eligible
+  period: 2026
+  input:
+    effectif_salarie: [50]
+    somme_unites_beneficiaires: [0]
+    somme_unites_contrats_services: [0]
+    somme_unites_contrats_disposition: [0]
+    regime_smag: [false]
+    a_employe_beneficiaires_annee_en_cours: [true]
+    a_employe_beneficiaires_annees_precedentes: [false]
+    a_contracte_annee_en_cours: [false]
+    a_contracte_annees_precedentes: [false]
+  output:
+    eligible_doublement_cotisation: [false]
+    montant_doublement_contribution: [0]
+
+- name: Doublement I - troncature a l entier inferieur
+  period: 2026
+  # contribution=340028.00 -> doublement=floor(340028*2)=680056 (entier exact ici)
+  # contribution=200016.00 -> doublement=floor(200016*2)=400032 (entier exact ici)
+  # cas avec decimales : contribution=0.99 -> floor(0.99*2)=floor(1.98)=1
+  input:
+    effectif_salarie: [50]
+    beneficiaires_manquants: [0.99]
+    regime_smag: [false]
+    a_employe_beneficiaires_annee_en_cours: [false]
+    a_employe_beneficiaires_annees_precedentes: [false]
+    a_contracte_annee_en_cours: [false]
+    a_contracte_annees_precedentes: [false]
+  output:
+    # 0.99 * 400 * 1000.08 = floor(396031.68) = 396031.68 -> *2 = floor(792063.36) = 792063
+    montant_doublement_contribution: [792063]
+
