@@ -280,3 +280,49 @@ class montant_doublement_contribution(Variable):
 
         return where(eligible, montant, 0.0)
 
+
+# ── Étape J : Dépenses déductibles ───────────────────────────────────────────
+
+class a_depenses_annee_en_cours(Variable):
+    value_type = bool
+    entity = Entreprise
+    definition_period = YEAR
+    label = "L'entreprise a engagé des dépenses déductibles l'année en cours"
+    # INPUT — correspond à isDepensesAnneeEnCours() dans le domaine Java
+
+
+class somme_depenses_ttc(Variable):
+    value_type = float
+    entity = Entreprise
+    definition_period = YEAR
+    label = (
+        "Somme des montants TTC des dépenses déductibles déclarées "
+        "(agrégation déléguée à l'appelant — cf. getMontantTTC() par dépense)"
+    )
+    # INPUT — la somme des dépenses individuelles est réalisée côté appelant.
+
+
+class montant_depenses_deductibles(Variable):
+    value_type = float
+    entity = Entreprise
+    definition_period = YEAR
+    label = (
+        "Étape J — Montant des dépenses déductibles "
+        "(plafonné à la contribution applicable, tronqué à l'entier)"
+    )
+
+    def formula(entreprise, period):
+        a_depenses = entreprise("a_depenses_annee_en_cours", period)
+
+        # Somme TTC tronquée à l'entier inférieur (setScale(0, DOWN) en Java)
+        somme = np.floor(entreprise("somme_depenses_ttc", period))
+
+        # Plafond : doublement si applicable, sinon contribution de base
+        doublement = entreprise("montant_doublement_contribution", period)
+        contribution = entreprise("contribution_avant_depenses_deductibles", period)
+        plafond = where(doublement == 0, contribution, doublement)
+
+        deductible = np.minimum(somme, plafond)
+
+        return where(a_depenses, deductible, 0.0)
+

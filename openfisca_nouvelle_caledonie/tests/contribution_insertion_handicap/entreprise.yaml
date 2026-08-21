@@ -372,3 +372,91 @@
     # 0.99 * 400 * 1000.08 = floor(396031.68) = 396031.68 -> *2 = floor(792063.36) = 792063
     montant_doublement_contribution: [792063]
 
+# ── Étape J : dépenses déductibles ───────────────────────────────────────────
+
+- name: Depenses J - pas de depenses annee en cours -> 0
+  period: 2026
+  input:
+    contribution_avant_depenses_deductibles: [400032.00]
+    montant_doublement_contribution: [0]
+    a_depenses_annee_en_cours: [false]
+    somme_depenses_ttc: [100000.50]
+  output:
+    montant_depenses_deductibles: [0]
+
+- name: Depenses J - depenses < contribution (sans doublement) -> depenses tronquees
+  period: 2026
+  # somme=100000.75 -> floor=100000 ; plafond=contribution=400032 ; min=100000
+  input:
+    contribution_avant_depenses_deductibles: [400032.00]
+    montant_doublement_contribution: [0]
+    a_depenses_annee_en_cours: [true]
+    somme_depenses_ttc: [100000.75]
+  output:
+    montant_depenses_deductibles: [100000]
+
+- name: Depenses J - depenses > contribution (sans doublement) -> plafonnees a la contribution
+  period: 2026
+  # somme=500000 -> floor=500000 ; plafond=contribution=400032 ; min=400032
+  input:
+    contribution_avant_depenses_deductibles: [400032.00]
+    montant_doublement_contribution: [0]
+    a_depenses_annee_en_cours: [true]
+    somme_depenses_ttc: [500000]
+  output:
+    montant_depenses_deductibles: [400032]
+
+- name: Depenses J - depenses < doublement (avec doublement) -> depenses tronquees
+  period: 2026
+  # somme=100000 ; plafond=doublement=800064 ; min=100000
+  input:
+    contribution_avant_depenses_deductibles: [400032.00]
+    montant_doublement_contribution: [800064]
+    a_depenses_annee_en_cours: [true]
+    somme_depenses_ttc: [100000]
+  output:
+    montant_depenses_deductibles: [100000]
+
+- name: Depenses J - depenses > doublement (avec doublement) -> plafonnees au doublement
+  period: 2026
+  # somme=900000 ; plafond=doublement=800064 ; min=800064
+  input:
+    contribution_avant_depenses_deductibles: [400032.00]
+    montant_doublement_contribution: [800064]
+    a_depenses_annee_en_cours: [true]
+    somme_depenses_ttc: [900000]
+  output:
+    montant_depenses_deductibles: [800064]
+
+- name: Depenses J - troncature a l entier inferieur sur la somme TTC
+  period: 2026
+  # somme=150000.99 -> floor=150000 ; plafond=400032 ; min=150000
+  input:
+    contribution_avant_depenses_deductibles: [400032.00]
+    montant_doublement_contribution: [0]
+    a_depenses_annee_en_cours: [true]
+    somme_depenses_ttc: [150000.99]
+  output:
+    montant_depenses_deductibles: [150000]
+
+- name: Depenses J - chaine complete sans doublement
+  period: 2026
+  # effectif=50, manquants=1, SMG -> contribution=400032
+  # pas de doublement (emploi annee en cours)
+  # depenses=200000 < 400032 -> deductible=200000
+  input:
+    effectif_salarie: [50]
+    somme_unites_beneficiaires: [0]
+    somme_unites_contrats_services: [0]
+    somme_unites_contrats_disposition: [0]
+    regime_smag: [false]
+    a_employe_beneficiaires_annee_en_cours: [true]
+    a_employe_beneficiaires_annees_precedentes: [false]
+    a_contracte_annee_en_cours: [false]
+    a_contracte_annees_precedentes: [false]
+    a_depenses_annee_en_cours: [true]
+    somme_depenses_ttc: [200000]
+  output:
+    contribution_avant_depenses_deductibles: [400032.00]
+    montant_doublement_contribution: [0]
+    montant_depenses_deductibles: [200000]

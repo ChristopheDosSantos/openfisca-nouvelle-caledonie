@@ -1,0 +1,283 @@
+### Variables globales
+@baseUrl = http://localhost:5000
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 1 : Pas de dépenses cette année → montant_depenses_deductibles = 0
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "e_pas_de_depenses": {
+      "beneficiaires_handicap": [],
+      "contribution_avant_depenses_deductibles": { "2026": 400032.00 },
+      "montant_doublement_contribution":          { "2026": 0 },
+      "a_depenses_annee_en_cours":                { "2026": false },
+      "somme_depenses_ttc":                       { "2026": 100000.50 },
+      "montant_depenses_deductibles":             { "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Pas de dépenses : montant_depenses_deductibles = 0", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const result = response.body.entreprises["e_pas_de_depenses"]
+            .montant_depenses_deductibles["2026"];
+        client.assert(result === 0, "Attendu 0, recu " + result);
+    });
+%}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 2 : Dépenses < contribution (sans doublement) → dépenses tronquées
+###   somme=100000.75 → floor=100000 ; plafond=400032 ; min=100000
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "e_depenses_sous_plafond": {
+      "beneficiaires_handicap": [],
+      "contribution_avant_depenses_deductibles": { "2026": 400032.00 },
+      "montant_doublement_contribution":          { "2026": 0 },
+      "a_depenses_annee_en_cours":                { "2026": true },
+      "somme_depenses_ttc":                       { "2026": 100000.75 },
+      "montant_depenses_deductibles":             { "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Dépenses < contribution : deductible = floor(100000.75) = 100000", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const result = response.body.entreprises["e_depenses_sous_plafond"]
+            .montant_depenses_deductibles["2026"];
+        client.assert(result === 100000, "Attendu 100000, recu " + result);
+    });
+%}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 3 : Dépenses > contribution (sans doublement) → plafonnées à la contribution
+###   somme=500000 ; plafond=contribution=400032 ; min=400032
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "e_depenses_sur_plafond": {
+      "beneficiaires_handicap": [],
+      "contribution_avant_depenses_deductibles": { "2026": 400032.00 },
+      "montant_doublement_contribution":          { "2026": 0 },
+      "a_depenses_annee_en_cours":                { "2026": true },
+      "somme_depenses_ttc":                       { "2026": 500000 },
+      "montant_depenses_deductibles":             { "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Dépenses > contribution : deductible = contribution = 400032", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const result = response.body.entreprises["e_depenses_sur_plafond"]
+            .montant_depenses_deductibles["2026"];
+        client.assert(result === 400032, "Attendu 400032, recu " + result);
+    });
+%}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 4 : Dépenses < doublement (avec doublement) → dépenses tronquées
+###   somme=100000 ; plafond=doublement=800064 ; min=100000
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "e_depenses_sous_doublement": {
+      "beneficiaires_handicap": [],
+      "contribution_avant_depenses_deductibles": { "2026": 400032.00 },
+      "montant_doublement_contribution":          { "2026": 800064 },
+      "a_depenses_annee_en_cours":                { "2026": true },
+      "somme_depenses_ttc":                       { "2026": 100000 },
+      "montant_depenses_deductibles":             { "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Dépenses < doublement : deductible = 100000", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const result = response.body.entreprises["e_depenses_sous_doublement"]
+            .montant_depenses_deductibles["2026"];
+        client.assert(result === 100000, "Attendu 100000, recu " + result);
+    });
+%}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 5 : Dépenses > doublement (avec doublement) → plafonnées au doublement
+###   somme=900000 ; plafond=doublement=800064 ; min=800064
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "e_depenses_sur_doublement": {
+      "beneficiaires_handicap": [],
+      "contribution_avant_depenses_deductibles": { "2026": 400032.00 },
+      "montant_doublement_contribution":          { "2026": 800064 },
+      "a_depenses_annee_en_cours":                { "2026": true },
+      "somme_depenses_ttc":                       { "2026": 900000 },
+      "montant_depenses_deductibles":             { "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Dépenses > doublement : deductible = doublement = 800064", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const result = response.body.entreprises["e_depenses_sur_doublement"]
+            .montant_depenses_deductibles["2026"];
+        client.assert(result === 800064, "Attendu 800064, recu " + result);
+    });
+%}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 6 : Troncature à l'entier sur la somme TTC
+###   somme=150000.99 → floor=150000 ; plafond=400032 ; min=150000
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "e_troncature_ttc": {
+      "beneficiaires_handicap": [],
+      "contribution_avant_depenses_deductibles": { "2026": 400032.00 },
+      "montant_doublement_contribution":          { "2026": 0 },
+      "a_depenses_annee_en_cours":                { "2026": true },
+      "somme_depenses_ttc":                       { "2026": 150000.99 },
+      "montant_depenses_deductibles":             { "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Troncature TTC : floor(150000.99) = 150000", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const result = response.body.entreprises["e_troncature_ttc"]
+            .montant_depenses_deductibles["2026"];
+        client.assert(result === 150000, "Attendu 150000, recu " + result);
+    });
+%}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 7 : Chaîne complète — sans doublement, dépenses partielles
+###   effectif=50, manquants=1, SMG → contribution=400032
+###   emploi en cours → doublement=0 → plafond=400032
+###   dépenses=200000 < 400032 → deductible=200000
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "e_chaine_sans_doublement": {
+      "beneficiaires_handicap": [],
+      "effectif_salarie":                          { "2026": 50 },
+      "somme_unites_beneficiaires":                { "2026": 0 },
+      "somme_unites_contrats_services":            { "2026": 0 },
+      "somme_unites_contrats_disposition":         { "2026": 0 },
+      "regime_smag":                               { "2026": false },
+      "a_employe_beneficiaires_annee_en_cours":    { "2026": true },
+      "a_employe_beneficiaires_annees_precedentes":{ "2026": false },
+      "a_contracte_annee_en_cours":                { "2026": false },
+      "a_contracte_annees_precedentes":            { "2026": false },
+      "a_depenses_annee_en_cours":                 { "2026": true },
+      "somme_depenses_ttc":                        { "2026": 200000 },
+      "contribution_avant_depenses_deductibles":   { "2026": null },
+      "montant_doublement_contribution":           { "2026": null },
+      "montant_depenses_deductibles":              { "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Chaîne complète sans doublement : deductible=200000", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const e = response.body.entreprises["e_chaine_sans_doublement"];
+
+        const contrib = e.contribution_avant_depenses_deductibles["2026"];
+        client.assert(contrib === 400032.0,
+            "Contribution attendue : 400032, recu " + contrib);
+
+        const doublement = e.montant_doublement_contribution["2026"];
+        client.assert(doublement === 0,
+            "Doublement attendu : 0, recu " + doublement);
+
+        const deductible = e.montant_depenses_deductibles["2026"];
+        client.assert(deductible === 200000,
+            "Deductible attendu : 200000, recu " + deductible);
+    });
+%}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 8 : Chaîne complète — avec doublement, dépenses plafonnées au doublement
+###   effectif=50, manquants=1, SMG → contribution=400032, doublement=800064
+###   dépenses=900000 > 800064 → deductible=800064
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "e_chaine_avec_doublement": {
+      "beneficiaires_handicap": [],
+      "effectif_salarie":                          { "2026": 50 },
+      "somme_unites_beneficiaires":                { "2026": 0 },
+      "somme_unites_contrats_services":            { "2026": 0 },
+      "somme_unites_contrats_disposition":         { "2026": 0 },
+      "regime_smag":                               { "2026": false },
+      "a_employe_beneficiaires_annee_en_cours":    { "2026": false },
+      "a_employe_beneficiaires_annees_precedentes":{ "2026": false },
+      "a_contracte_annee_en_cours":                { "2026": false },
+      "a_contracte_annees_precedentes":            { "2026": false },
+      "a_depenses_annee_en_cours":                 { "2026": true },
+      "somme_depenses_ttc":                        { "2026": 900000 },
+      "contribution_avant_depenses_deductibles":   { "2026": null },
+      "montant_doublement_contribution":           { "2026": null },
+      "montant_depenses_deductibles":              { "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Chaîne complète avec doublement : deductible=800064", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const e = response.body.entreprises["e_chaine_avec_doublement"];
+
+        const contrib = e.contribution_avant_depenses_deductibles["2026"];
+        client.assert(contrib === 400032.0,
+            "Contribution attendue : 400032, recu " + contrib);
+
+        const doublement = e.montant_doublement_contribution["2026"];
+        client.assert(doublement === 800064.0,
+            "Doublement attendu : 800064, recu " + doublement);
+
+        const deductible = e.montant_depenses_deductibles["2026"];
+        client.assert(deductible === 800064,
+            "Deductible attendu : 800064, recu " + deductible);
+    });
+%}
+
