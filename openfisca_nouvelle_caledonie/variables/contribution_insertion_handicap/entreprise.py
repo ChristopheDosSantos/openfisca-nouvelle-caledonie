@@ -326,3 +326,26 @@ class montant_depenses_deductibles(Variable):
 
         return where(a_depenses, deductible, 0.0)
 
+
+# ── Étape K : Contribution finale ────────────────────────────────────────────
+
+class montant_contribution(Variable):
+    value_type = float
+    entity = Entreprise
+    definition_period = YEAR
+    label = (
+        "Étape K — Contribution finale "
+        "(base − dépenses déductibles, tronquée à l'entier inférieur)"
+    )
+
+    def formula(entreprise, period):
+        doublement = entreprise("montant_doublement_contribution", period)
+        contribution = entreprise("contribution_avant_depenses_deductibles", period)
+        depenses = entreprise("montant_depenses_deductibles", period)
+
+        # Même logique de sélection de la base que pour le plafond des dépenses
+        base = where(doublement == 0, contribution, doublement)
+
+        # Soustraction puis RoundingMode.DOWN vers l'entier (setScale(0, DOWN))
+        return np.floor(base - depenses)
+

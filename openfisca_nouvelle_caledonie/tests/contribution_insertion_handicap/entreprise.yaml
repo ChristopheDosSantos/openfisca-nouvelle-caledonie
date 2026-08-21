@@ -460,3 +460,102 @@
     contribution_avant_depenses_deductibles: [400032.00]
     montant_doublement_contribution: [0]
     montant_depenses_deductibles: [200000]
+
+# ── Étape K : contribution finale ─────────────────────────────────────────────
+
+- name: Contribution K - sans doublement sans depenses
+  period: 2026
+  # base=contribution=400032 ; depenses=0 ; finale=floor(400032-0)=400032
+  input:
+    contribution_avant_depenses_deductibles: [400032.00]
+    montant_doublement_contribution: [0]
+    montant_depenses_deductibles: [0]
+  output:
+    montant_contribution: [400032]
+
+- name: Contribution K - sans doublement avec depenses partielles
+  period: 2026
+  # base=contribution=400032 ; depenses=100000 ; finale=floor(300032)=300032
+  input:
+    contribution_avant_depenses_deductibles: [400032.00]
+    montant_doublement_contribution: [0]
+    montant_depenses_deductibles: [100000]
+  output:
+    montant_contribution: [300032]
+
+- name: Contribution K - avec doublement sans depenses
+  period: 2026
+  # base=doublement=800064 ; depenses=0 ; finale=800064
+  input:
+    contribution_avant_depenses_deductibles: [400032.00]
+    montant_doublement_contribution: [800064]
+    montant_depenses_deductibles: [0]
+  output:
+    montant_contribution: [800064]
+
+- name: Contribution K - avec doublement avec depenses partielles
+  period: 2026
+  # base=doublement=800064 ; depenses=100000 ; finale=700064
+  input:
+    contribution_avant_depenses_deductibles: [400032.00]
+    montant_doublement_contribution: [800064]
+    montant_depenses_deductibles: [100000]
+  output:
+    montant_contribution: [700064]
+
+- name: Contribution K - troncature a l entier inferieur
+  period: 2026
+  # contribution=396031.68 ; doublement=0 ; depenses=0 ; finale=floor(396031.68)=396031
+  input:
+    contribution_avant_depenses_deductibles: [396031.68]
+    montant_doublement_contribution: [0]
+    montant_depenses_deductibles: [0]
+  output:
+    montant_contribution: [396031]
+
+- name: Contribution K - chaine complete sans doublement avec depenses
+  period: 2026
+  # effectif=50, manquants=1, SMG -> contribution=400032, doublement=0
+  # depenses=200000 -> deductible=200000
+  # finale = floor(400032 - 200000) = 200032
+  input:
+    effectif_salarie: [50]
+    somme_unites_beneficiaires: [0]
+    somme_unites_contrats_services: [0]
+    somme_unites_contrats_disposition: [0]
+    regime_smag: [false]
+    a_employe_beneficiaires_annee_en_cours: [true]
+    a_employe_beneficiaires_annees_precedentes: [false]
+    a_contracte_annee_en_cours: [false]
+    a_contracte_annees_precedentes: [false]
+    a_depenses_annee_en_cours: [true]
+    somme_depenses_ttc: [200000]
+  output:
+    contribution_avant_depenses_deductibles: [400032.00]
+    montant_doublement_contribution: [0]
+    montant_depenses_deductibles: [200000]
+    montant_contribution: [200032]
+
+- name: Contribution K - chaine complete avec doublement et depenses
+  period: 2026
+  # effectif=50, manquants=1, SMG -> contribution=400032, doublement=800064
+  # depenses=300000 < 800064 -> deductible=300000
+  # finale = floor(800064 - 300000) = 500064
+  input:
+    effectif_salarie: [50]
+    somme_unites_beneficiaires: [0]
+    somme_unites_contrats_services: [0]
+    somme_unites_contrats_disposition: [0]
+    regime_smag: [false]
+    a_employe_beneficiaires_annee_en_cours: [false]
+    a_employe_beneficiaires_annees_precedentes: [false]
+    a_contracte_annee_en_cours: [false]
+    a_contracte_annees_precedentes: [false]
+    a_depenses_annee_en_cours: [true]
+    somme_depenses_ttc: [300000]
+  output:
+    contribution_avant_depenses_deductibles: [400032.00]
+    montant_doublement_contribution: [800064]
+    montant_depenses_deductibles: [300000]
+    montant_contribution: [500064]
+

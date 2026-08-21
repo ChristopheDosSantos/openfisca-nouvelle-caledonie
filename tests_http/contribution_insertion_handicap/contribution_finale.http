@@ -1,0 +1,247 @@
+### Variables globales
+@baseUrl = http://localhost:5000
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 1 : Sans doublement, sans dépenses → finale = contribution
+###   base=contribution=400032 ; depenses=0 ; finale=400032
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "e_sans_doublement_sans_depenses": {
+      "beneficiaires_handicap": [],
+      "contribution_avant_depenses_deductibles": { "2026": 400032.00 },
+      "montant_doublement_contribution":          { "2026": 0 },
+      "montant_depenses_deductibles":             { "2026": 0 },
+      "montant_contribution":                     { "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Sans doublement, sans dépenses : finale = contribution = 400032", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const result = response.body.entreprises["e_sans_doublement_sans_depenses"]
+            .montant_contribution["2026"];
+        client.assert(result === 400032, "Attendu 400032, recu " + result);
+    });
+%}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 2 : Sans doublement, avec dépenses partielles
+###   base=400032 ; depenses=100000 ; finale=floor(300032)=300032
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "e_sans_doublement_avec_depenses": {
+      "beneficiaires_handicap": [],
+      "contribution_avant_depenses_deductibles": { "2026": 400032.00 },
+      "montant_doublement_contribution":          { "2026": 0 },
+      "montant_depenses_deductibles":             { "2026": 100000 },
+      "montant_contribution":                     { "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Sans doublement, dépenses partielles : finale = 300032", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const result = response.body.entreprises["e_sans_doublement_avec_depenses"]
+            .montant_contribution["2026"];
+        client.assert(result === 300032, "Attendu 300032, recu " + result);
+    });
+%}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 3 : Avec doublement, sans dépenses → finale = doublement
+###   base=doublement=800064 ; depenses=0 ; finale=800064
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "e_avec_doublement_sans_depenses": {
+      "beneficiaires_handicap": [],
+      "contribution_avant_depenses_deductibles": { "2026": 400032.00 },
+      "montant_doublement_contribution":          { "2026": 800064 },
+      "montant_depenses_deductibles":             { "2026": 0 },
+      "montant_contribution":                     { "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Avec doublement, sans dépenses : finale = doublement = 800064", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const result = response.body.entreprises["e_avec_doublement_sans_depenses"]
+            .montant_contribution["2026"];
+        client.assert(result === 800064, "Attendu 800064, recu " + result);
+    });
+%}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 4 : Avec doublement, avec dépenses partielles
+###   base=doublement=800064 ; depenses=100000 ; finale=700064
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "e_avec_doublement_avec_depenses": {
+      "beneficiaires_handicap": [],
+      "contribution_avant_depenses_deductibles": { "2026": 400032.00 },
+      "montant_doublement_contribution":          { "2026": 800064 },
+      "montant_depenses_deductibles":             { "2026": 100000 },
+      "montant_contribution":                     { "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Avec doublement, dépenses partielles : finale = 700064", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const result = response.body.entreprises["e_avec_doublement_avec_depenses"]
+            .montant_contribution["2026"];
+        client.assert(result === 700064, "Attendu 700064, recu " + result);
+    });
+%}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 5 : Troncature à l'entier inférieur
+###   contribution=396031.68 ; doublement=0 ; depenses=0
+###   finale = floor(396031.68) = 396031
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "e_troncature": {
+      "beneficiaires_handicap": [],
+      "contribution_avant_depenses_deductibles": { "2026": 396031.68 },
+      "montant_doublement_contribution":          { "2026": 0 },
+      "montant_depenses_deductibles":             { "2026": 0 },
+      "montant_contribution":                     { "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Troncature : floor(396031.68) = 396031", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const result = response.body.entreprises["e_troncature"]
+            .montant_contribution["2026"];
+        client.assert(result === 396031, "Attendu 396031, recu " + result);
+    });
+%}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 6 : Chaîne complète — sans doublement, dépenses partielles
+###   effectif=50, manquants=1, SMG → contribution=400032, doublement=0
+###   dépenses=200000 → deductible=200000
+###   finale = floor(400032 − 200000) = 200032
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "e_chaine_sans_doublement": {
+      "beneficiaires_handicap": [],
+      "effectif_salarie":                          { "2026": 50 },
+      "somme_unites_beneficiaires":                { "2026": 0 },
+      "somme_unites_contrats_services":            { "2026": 0 },
+      "somme_unites_contrats_disposition":         { "2026": 0 },
+      "regime_smag":                               { "2026": false },
+      "a_employe_beneficiaires_annee_en_cours":    { "2026": true },
+      "a_employe_beneficiaires_annees_precedentes":{ "2026": false },
+      "a_contracte_annee_en_cours":                { "2026": false },
+      "a_contracte_annees_precedentes":            { "2026": false },
+      "a_depenses_annee_en_cours":                 { "2026": true },
+      "somme_depenses_ttc":                        { "2026": 200000 },
+      "contribution_avant_depenses_deductibles":   { "2026": null },
+      "montant_doublement_contribution":           { "2026": null },
+      "montant_depenses_deductibles":              { "2026": null },
+      "montant_contribution":                      { "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Chaîne sans doublement : H=400032, I=0, J=200000, K=200032", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const e = response.body.entreprises["e_chaine_sans_doublement"];
+
+        client.assert(e.contribution_avant_depenses_deductibles["2026"] === 400032,
+            "Étape H attendue : 400032");
+        client.assert(e.montant_doublement_contribution["2026"] === 0,
+            "Étape I attendue : 0");
+        client.assert(e.montant_depenses_deductibles["2026"] === 200000,
+            "Étape J attendue : 200000");
+        client.assert(e.montant_contribution["2026"] === 200032,
+            "Étape K attendue : 200032");
+    });
+%}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 7 : Chaîne complète — avec doublement, dépenses partielles
+###   effectif=50, manquants=1, SMG → contribution=400032, doublement=800064
+###   dépenses=300000 < 800064 → deductible=300000
+###   finale = floor(800064 − 300000) = 500064
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "e_chaine_avec_doublement": {
+      "beneficiaires_handicap": [],
+      "effectif_salarie":                          { "2026": 50 },
+      "somme_unites_beneficiaires":                { "2026": 0 },
+      "somme_unites_contrats_services":            { "2026": 0 },
+      "somme_unites_contrats_disposition":         { "2026": 0 },
+      "regime_smag":                               { "2026": false },
+      "a_employe_beneficiaires_annee_en_cours":    { "2026": false },
+      "a_employe_beneficiaires_annees_precedentes":{ "2026": false },
+      "a_contracte_annee_en_cours":                { "2026": false },
+      "a_contracte_annees_precedentes":            { "2026": false },
+      "a_depenses_annee_en_cours":                 { "2026": true },
+      "somme_depenses_ttc":                        { "2026": 300000 },
+      "contribution_avant_depenses_deductibles":   { "2026": null },
+      "montant_doublement_contribution":           { "2026": null },
+      "montant_depenses_deductibles":              { "2026": null },
+      "montant_contribution":                      { "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Chaîne avec doublement : H=400032, I=800064, J=300000, K=500064", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const e = response.body.entreprises["e_chaine_avec_doublement"];
+
+        client.assert(e.contribution_avant_depenses_deductibles["2026"] === 400032,
+            "Étape H attendue : 400032");
+        client.assert(e.montant_doublement_contribution["2026"] === 800064,
+            "Étape I attendue : 800064");
+        client.assert(e.montant_depenses_deductibles["2026"] === 300000,
+            "Étape J attendue : 300000");
+        client.assert(e.montant_contribution["2026"] === 500064,
+            "Étape K attendue : 500064");
+    });
+%}
+
