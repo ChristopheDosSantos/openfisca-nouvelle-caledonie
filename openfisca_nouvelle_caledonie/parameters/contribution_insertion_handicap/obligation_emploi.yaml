@@ -32,14 +32,34 @@ diviseur_unite_contrat:
     2020-01-01:
       value: 2000
 
+multiplicateur_contribution:
+  description: >
+    Barème du multiplicateur appliqué aux bénéficiaires manquants selon l'effectif.
+    En-dessous du seuil : multiplicateur_bas ; au seuil et au-dessus : multiplicateur_haut.
+  seuil:
+    description: Effectif à partir duquel le multiplicateur passe à la valeur haute (borne incluse)
+    values:
+      2026-01-01:
+        value: 100
+  bas:
+    description: Multiplicateur si effectif strictement inférieur au seuil
+    values:
+      2026-01-01:
+        value: 400
+  haut:
+    description: Multiplicateur si effectif supérieur ou égal au seuil
+    values:
+      2026-01-01:
+        value: 500
+
 taux_horaire_smg:
   description: Taux horaire du Salaire Minimum Garanti utilisé pour la CIH
   values:
-    2026-08-01:
-      value: 1000,08    # à ajuster avec la vraie valeur
+    2026-01-01:
+      value: 1000.08    # à ajuster avec la vraie valeur
 
 taux_horaire_smag:
   description: Taux horaire du Salaire Minimum Garanti Agricole utilisé pour la CIH
   values:
-    2026-08-01:
-      value: 850,07    # à ajuster avec la vraie valeur
+    2026-01-01:
+      value: 850.07    # à ajuster avec la vraie valeur

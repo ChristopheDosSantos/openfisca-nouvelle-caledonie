@@ -1,0 +1,214 @@
+### Variables globales
+@baseUrl = http://localhost:5000
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 1 : Entreprise exonérée (réponse création) → contribution = 0
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "entreprise_creation": {
+      "beneficiaires_handicap": [],
+      "effectif_salarie":                          { "2026": 50 },
+      "somme_unites_beneficiaires":                { "2026": 0 },
+      "somme_unites_contrats_services":            { "2026": 0 },
+      "somme_unites_contrats_disposition":         { "2026": 0 },
+      "regime_smag":                               { "2026": false },
+      "exonere_contribution_insertion_handicap":   { "2026": true },
+      "contribution_avant_depenses_deductibles":   { "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Entreprise en creation : contribution = 0", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const result = response.body.entreprises["entreprise_creation"]
+            .contribution_avant_depenses_deductibles["2026"];
+        client.assert(result === 0, "Attendu 0, recu " + result);
+    });
+%}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 2 : Effectif < 100, régime SMG, aucune unité
+###   nb_beneficiaires = 1  (50 × 2,5 % = 1,25 → 1)
+###   manquants        = 1
+###   1 × 400 × 1 000,08 = 400 032,00
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "entreprise_sous_100_smg": {
+      "beneficiaires_handicap": [],
+      "effectif_salarie":                          { "2026": 50 },
+      "somme_unites_beneficiaires":                { "2026": 0 },
+      "somme_unites_contrats_services":            { "2026": 0 },
+      "somme_unites_contrats_disposition":         { "2026": 0 },
+      "regime_smag":                               { "2026": false },
+      "contribution_avant_depenses_deductibles":   { "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Effectif < 100 SMG : multiplicateur 400, contribution = 400032", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const result = response.body.entreprises["entreprise_sous_100_smg"]
+            .contribution_avant_depenses_deductibles["2026"];
+        const expected = 400032.00;
+        client.assert(result === expected, "Attendu " + expected + ", recu " + result);
+    });
+%}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 3 : Effectif >= 100, régime SMG, aucune unité
+###   nb_beneficiaires = 2  (100 × 2,5 % = 2,5 → 2)
+###   manquants        = 2
+###   2 × 500 × 1 000,08 = 1 000 080,00
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "entreprise_100_et_plus_smg": {
+      "beneficiaires_handicap": [],
+      "effectif_salarie":                          { "2026": 100 },
+      "somme_unites_beneficiaires":                { "2026": 0 },
+      "somme_unites_contrats_services":            { "2026": 0 },
+      "somme_unites_contrats_disposition":         { "2026": 0 },
+      "regime_smag":                               { "2026": false },
+      "contribution_avant_depenses_deductibles":   { "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Effectif >= 100 SMG : multiplicateur 500, contribution = 1000080", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const result = response.body.entreprises["entreprise_100_et_plus_smg"]
+            .contribution_avant_depenses_deductibles["2026"];
+        const expected = 1000080.00;
+        client.assert(result === expected, "Attendu " + expected + ", recu " + result);
+    });
+%}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 4 : Effectif < 100, régime SMAG, aucune unité
+###   manquants = 1
+###   1 × 400 × 850,07 = 340 028,00
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "entreprise_sous_100_smag": {
+      "beneficiaires_handicap": [],
+      "effectif_salarie":                          { "2026": 50 },
+      "somme_unites_beneficiaires":                { "2026": 0 },
+      "somme_unites_contrats_services":            { "2026": 0 },
+      "somme_unites_contrats_disposition":         { "2026": 0 },
+      "regime_smag":                               { "2026": true },
+      "contribution_avant_depenses_deductibles":   { "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Effectif < 100 SMAG : taux SMAG, contribution = 340028", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const result = response.body.entreprises["entreprise_sous_100_smag"]
+            .contribution_avant_depenses_deductibles["2026"];
+        const expected = 340028.00;
+        client.assert(result === expected, "Attendu " + expected + ", recu " + result);
+    });
+%}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 5 : Aucun bénéficiaire manquant → contribution = 0
+###   effectif=100 → nb_dus=2 ; unités_bénéf=1.9 + contrats=0.8 = 2.7 ≥ 2
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "entreprise_obligation_remplie": {
+      "beneficiaires_handicap": [],
+      "effectif_salarie":                          { "2026": 100 },
+      "somme_unites_beneficiaires":                { "2026": 1.9 },
+      "somme_unites_contrats_services":            { "2026": 0.8 },
+      "somme_unites_contrats_disposition":         { "2026": 0 },
+      "regime_smag":                               { "2026": false },
+      "beneficiaires_manquants":                   { "2026": null },
+      "contribution_avant_depenses_deductibles":   { "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Obligation remplie : contribution = 0", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+
+        const manquants = response.body.entreprises["entreprise_obligation_remplie"]
+            .beneficiaires_manquants["2026"];
+        client.assert(manquants === 0, "Manquants attendus : 0, recu " + manquants);
+
+        const contrib = response.body.entreprises["entreprise_obligation_remplie"]
+            .contribution_avant_depenses_deductibles["2026"];
+        client.assert(contrib === 0, "Contribution attendue : 0, recu " + contrib);
+    });
+%}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### Cas 6 : Calcul intégré chaîne complète — obligation partiellement remplie
+###   effectif=50 → nb_dus=1
+###   unités bénéficiaires fournies = 0,5 (via input direct)
+###   contrats = 0
+###   manquants = floor((1 - 0,5) × 100) / 100 = 0,50
+###   0,50 × 400 × 1 000,08 = 200 016,00
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": { "individu_technique": {} },
+  "entreprises": {
+    "entreprise_partiel": {
+      "beneficiaires_handicap": [],
+      "effectif_salarie":                          { "2026": 50 },
+      "somme_unites_beneficiaires":                { "2026": 0.5 },
+      "somme_unites_contrats_services":            { "2026": 0 },
+      "somme_unites_contrats_disposition":         { "2026": 0 },
+      "regime_smag":                               { "2026": false },
+      "beneficiaires_manquants":                   { "2026": null },
+      "contribution_avant_depenses_deductibles":   { "2026": null }
+    }
+  }
+}
+
+> {%
+    client.test("Obligation partiellement remplie : manquants=0.5, contribution=200016", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+
+        const manquants = response.body.entreprises["entreprise_partiel"]
+            .beneficiaires_manquants["2026"];
+        client.assert(manquants === 0.5, "Manquants attendus : 0.5, recu " + manquants);
+
+        const contrib = response.body.entreprises["entreprise_partiel"]
+            .contribution_avant_depenses_deductibles["2026"];
+        const expected = 200016.00;
+        client.assert(contrib === expected, "Attendu " + expected + ", recu " + contrib);
+    });
+%}
+

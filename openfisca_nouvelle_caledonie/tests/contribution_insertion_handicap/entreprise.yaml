@@ -182,3 +182,67 @@
     total_general_unites_contrats: [0.8]
     beneficiaires_manquants: [0]
 
+# ── Étape H : contribution avant dépenses déductibles ─────────────────────────
+
+- name: Contribution H - entreprise exoneree (creation)
+  period: 2026
+  input:
+    effectif_salarie: [50]
+    beneficiaires_manquants: [1.0]
+    exonere_contribution_insertion_handicap: [true]
+  output:
+    contribution_avant_depenses_deductibles: [0]
+
+- name: Contribution H - effectif < 100 SMG
+  period: 2026
+  # effectif=50 → nb_bénéficiaires=1, unités=0 → manquants=1
+  # 1 * 400 * 1000.08 = 400032.00
+  input:
+    effectif_salarie: [50]
+    somme_unites_beneficiaires: [0]
+    somme_unites_contrats_services: [0]
+    somme_unites_contrats_disposition: [0]
+    regime_smag: [false]
+  output:
+    beneficiaires_manquants: [1]
+    contribution_avant_depenses_deductibles: [400032.00]
+
+- name: Contribution H - effectif >= 100 SMG
+  period: 2026
+  # effectif=100 → nb_bénéficiaires=2, unités=0 → manquants=2
+  # 2 * 500 * 1000.08 = 1000080.00
+  input:
+    effectif_salarie: [100]
+    somme_unites_beneficiaires: [0]
+    somme_unites_contrats_services: [0]
+    somme_unites_contrats_disposition: [0]
+    regime_smag: [false]
+  output:
+    beneficiaires_manquants: [2]
+    contribution_avant_depenses_deductibles: [1000080.00]
+
+- name: Contribution H - effectif < 100 SMAG
+  period: 2026
+  # effectif=50 → manquants=1, multiplicateur=400, taux SMAG=850.07
+  # 1 * 400 * 850.07 = 340028.00
+  input:
+    effectif_salarie: [50]
+    somme_unites_beneficiaires: [0]
+    somme_unites_contrats_services: [0]
+    somme_unites_contrats_disposition: [0]
+    regime_smag: [true]
+  output:
+    beneficiaires_manquants: [1]
+    contribution_avant_depenses_deductibles: [340028.00]
+
+- name: Contribution H - nulle si pas de beneficiaires manquants
+  period: 2026
+  input:
+    effectif_salarie: [100]
+    somme_unites_beneficiaires: [1.9]
+    somme_unites_contrats_services: [0.8]
+    somme_unites_contrats_disposition: [0]
+    regime_smag: [false]
+  output:
+    beneficiaires_manquants: [0]
+    contribution_avant_depenses_deductibles: [0]

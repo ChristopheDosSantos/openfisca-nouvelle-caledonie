@@ -3,6 +3,7 @@ from openfisca_nouvelle_caledonie.entities import Entreprise
 import numpy as np
 
 
+
 class effectif_salarie(Variable):
     value_type = int
     entity = Entreprise
@@ -110,3 +111,66 @@ class beneficiaires_manquants(Variable):
         manque_tronque = np.floor(manque * 100) / 100
 
         return np.maximum(manque_tronque, 0)
+
+
+class exonere_contribution_insertion_handicap(Variable):
+    value_type = bool
+    entity = Entreprise
+    definition_period = YEAR
+    label = (
+        "L'entreprise est exonérée de la contribution (création d'entreprise ou "
+        "effectif inférieur ou égal au seuil)"
+    )
+    # Variable d'INPUT : pas de formula — fournie directement par l'appelant.
+    # Couvre les deux cas de la logique métier Java :
+    #   - isReponseCreation() : entreprise nouvellement créée
+    #   - isReponseSeuil()    : entreprise sous le seuil d'effectif
+
+
+class regime_smag(Variable):
+    value_type = bool
+    entity = Entreprise
+    definition_period = YEAR
+    label = (
+        "L'entreprise relève du Salaire Minimum Agricole Garanti (SMAG) "
+        "pour le calcul de la contribution"
+    )
+    # Variable d'INPUT : pas de formula.
+
+
+class contribution_avant_depenses_deductibles(Variable):
+    value_type = float
+    entity = Entreprise
+    definition_period = YEAR
+    label = (
+        "Étape H — Contribution avant dépenses déductibles "
+        "(bénéficiaires manquants × multiplicateur × taux horaire)"
+    )
+
+    def formula(entreprise, period, parameters):
+        # --- Exonération (création d'entreprise ou effectif sous seuil) ---
+        exonere = entreprise("exonere_contribution_insertion_handicap", period)
+
+        # --- Multiplicateur selon effectif (lu depuis les paramètres) ---
+        effectif = entreprise("effectif_salarie", period)
+        mult = (
+            parameters(period)
+            .contribution_insertion_handicap.obligation_emploi.multiplicateur_contribution
+        )
+        multiplicateur = where(
+            effectif < mult.seuil,
+            mult.bas,
+            mult.haut,
+        )
+
+        # --- Taux horaire (SMG ou SMAG) ---
+        params = parameters(period).contribution_insertion_handicap.obligation_emploi
+        est_smag = entreprise("regime_smag", period)
+        taux = where(est_smag, params.taux_horaire_smag, params.taux_horaire_smg)
+
+        # --- Montant brut, tronqué à 2 décimales (RoundingMode.DOWN) ---
+        manquants = entreprise("beneficiaires_manquants", period)
+        montant = np.floor(manquants * multiplicateur * taux * 100) / 100
+
+        return where(exonere, 0.0, montant)
+
