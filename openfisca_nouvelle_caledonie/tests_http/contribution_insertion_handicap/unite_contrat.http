@@ -29,11 +29,11 @@ Content-Type: application/json
 }
 
 > {%
-    client.test("Contrat services calcule 1.25 unite", function() {
+    client.test("Contrat services calcule 1.24 unite", function() {
         client.assert(response.status === 200, "Statut HTTP attendu : 200");
 
         const result = response.body.contrats["contrat_services"].unite_contrat["2026"];
-        const expected = 1.25;
+        const expected = 1.24;
         client.assert(result === expected, "Attendu " + expected + ", recu " + result);
     });
 %}

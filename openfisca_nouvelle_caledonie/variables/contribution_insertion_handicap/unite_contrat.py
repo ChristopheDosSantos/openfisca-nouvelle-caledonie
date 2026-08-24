@@ -44,7 +44,7 @@ class unite_contrat(Variable):
         prix = contrat('prix_ht_fourniture', period)
         cout_matiere = contrat('cout_matiere_premiere', period)
 
-        p = parameters(period).contribution_insertion_handicap
+        p = parameters(period).contribution_insertion_handicap.obligation_emploi
         base = prix - cout_matiere
 
         # le diviseur pourrait différer entre SERVICES et DISPOSITION un jour,

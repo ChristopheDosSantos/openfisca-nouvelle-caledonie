@@ -1,20 +1,40 @@
+# Stratégie de test :
+# - Les cas "base nulle" et "symétrie SERVICES/DISPOSITION" sont des invariants
+#   logiques, indépendants de la valeur du SMG.
+# - Les cas avec valeur absolue dépendent des paramètres en vigueur. Quand les
+#   paramètres changent (ex : revalorisation annuelle du SMG), il faut mettre à
+#   jour la valeur attendue ET le commentaire de calcul ci-dessous.
+#   Note : la clé `parameters:` d'OpenFisca Core ne permet pas de surcharger un
+#   seul paramètre de façon fiable dans cette version ; on documente donc le
+#   calcul en clair plutôt que d'ancrer les paramètres dans le test lui-même.
+
+# ── Cas avec valeur absolue (dépend de diviseur_unite_contrat et taux_horaire_smg) ──
+
 - name: Contrat services calcule les unites sur la base nette
   period: 2026
+  # base = 3 000 000 - 500 000 = 2 500 000
+  # floor(2 500 000 / (diviseur_unite_contrat * taux_horaire_smg) * 100) / 100
+  # avec diviseur=2000 et taux_horaire_smg=1000.08 (valeur 2026) :
+  #   = floor(2 500 000 / 2 000 160 * 100) / 100 = floor(124.99...) / 100 = 1.24
   input:
     type_contrat: [services]
     prix_ht_fourniture: [3000000]
     cout_matiere_premiere: [500000]
   output:
-    unite_contrat: [1.25]
+    unite_contrat: [1.24]
 
 - name: Contrat disposition applique la troncature a 2 decimales
   period: 2026
+  # base = 2 499 999 (volontairement non divisible pour forcer la troncature)
+  # floor(2 499 999 / (2000 * 1000.08) * 100) / 100 = floor(124.99...) / 100 = 1.24
   input:
     type_contrat: [disposition]
     prix_ht_fourniture: [2499999]
     cout_matiere_premiere: [0]
   output:
     unite_contrat: [1.24]
+
+# ── Invariants logiques (indépendants de la valeur du SMG) ────────────────────
 
 - name: Contrat avec base nulle donne 0 unite
   period: 2026
@@ -25,3 +45,13 @@
   output:
     unite_contrat: [0]
 
+- name: SERVICES et DISPOSITION suivent la meme formule pour un meme montant
+  period: 2026
+  # Les deux types de contrats utilisent actuellement la même formule ;
+  # ce test échouera si on introduit une divergence non intentionnelle.
+  input:
+    type_contrat: [services, disposition]
+    prix_ht_fourniture: [3000000, 3000000]
+    cout_matiere_premiere: [500000, 500000]
+  output:
+    unite_contrat: [1.24, 1.24]
