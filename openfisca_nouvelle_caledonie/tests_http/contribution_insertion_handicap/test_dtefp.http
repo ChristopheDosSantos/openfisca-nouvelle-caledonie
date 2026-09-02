@@ -1,0 +1,782 @@
+### Variables globales
+@baseUrl = http://localhost:5000
+
+### Test 1
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "beneficiaire_1": {
+      "qualite_beneficiaire": {
+        "2026": "beneficiaire_a"
+      },
+      "nb_heures_travaillees": {
+        "2026": 0
+      },
+      "unite_beneficiaire": {
+        "2026": null
+      }
+    },
+    "beneficiaire_2": {
+      "qualite_beneficiaire": {
+        "2026": "beneficiaire_a"
+      },
+      "nb_heures_travaillees": {
+        "2026": 0
+      },
+      "unite_beneficiaire": {
+        "2026": null
+      }
+    },
+    "beneficiaire_3": {
+      "qualite_beneficiaire": {
+        "2026": "beneficiaire_a"
+      },
+      "nb_heures_travaillees": {
+        "2026": 0
+      },
+      "unite_beneficiaire": {
+        "2026": null
+      }
+    }
+  },
+  "entreprises": {
+    "entreprise_1": {
+      "beneficiaires_handicap": ["beneficiaire_1","beneficiaire_2","beneficiaire_3"],
+      "effectif_salarie": {
+        "2026": 313.77
+      },
+      "soumis_obligation_emploi_handicapes": {
+        "2026": null
+      },
+      "nb_beneficiaires_devant_etre_employes": {
+        "2026": null
+      },
+      "a_depenses_annee_en_cours":                { "2026": true },
+      "a_employe_beneficiaires_annee_en_cours":   { "2026": true },
+      "somme_depenses_ttc":                       { "2026": 4068670 },
+      "eligible_doublement_cotisation":           { "2026": null },
+      "montant_doublement_contribution":          { "2026": null },
+      "contribution_avant_depenses_deductibles":  { "2026": null },
+      "montant_depenses_deductibles":             { "2026": null },
+      "montant_contribution":                     { "2026": null }
+    }
+  }
+}
+> {%
+    client.test("contribution = 0", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const doublement = response.body.entreprises["entreprise_1"]
+            .eligible_doublement_cotisation["2026"];
+        client.assert(doublement === false, "Attendu false, recu " + doublement);
+        const montant = response.body.entreprises["entreprise_1"]
+            .montant_contribution["2026"];
+        client.assert(montant === 0, "Attendu 0, recu " + montant);
+    });
+%}
+
+### Test 2
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "beneficiaire_1": {
+      "qualite_beneficiaire": {
+        "2026": "beneficiaire_a"
+      },
+      "nb_heures_travaillees": {
+        "2026": 0
+      },
+      "unite_beneficiaire": {
+        "2026": null
+      }
+    },
+    "beneficiaire_2": {
+      "qualite_beneficiaire": {
+        "2026": "beneficiaire_a"
+      },
+      "nb_heures_travaillees": {
+        "2026": 0
+      },
+      "unite_beneficiaire": {
+        "2026": null
+      }
+    }
+  },
+  "entreprises": {
+    "entreprise_2": {
+      "beneficiaires_handicap": ["beneficiaire_1","beneficiaire_2"],
+      "effectif_salarie": {
+        "2026": 119
+      },
+      "soumis_obligation_emploi_handicapes": {
+        "2026": null
+      },
+      "nb_beneficiaires_devant_etre_employes": {
+        "2026": null
+      },
+      "a_depenses_annee_en_cours":                { "2026": false },
+      "a_employe_beneficiaires_annees_precedentes": { "2026": true },
+      "a_employe_beneficiaires_annee_en_cours":   { "2026": false },
+      "somme_depenses_ttc":                       { "2026": 0 },
+      "eligible_doublement_cotisation":           { "2026": null },
+      "montant_doublement_contribution":          { "2026": null },
+      "contribution_avant_depenses_deductibles":  { "2026": null },
+      "montant_depenses_deductibles":             { "2026": null },
+      "montant_contribution":                     { "2026": null }
+    }
+  }
+}
+> {%
+    client.test("contribution = 0", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const doublement = response.body.entreprises["entreprise_2"]
+            .eligible_doublement_cotisation["2026"];
+        client.assert(doublement === false, "Attendu false, recu " + doublement);
+        const montant = response.body.entreprises["entreprise_2"]
+            .montant_contribution["2026"];
+        client.assert(montant === 0, "Attendu 0, recu " + montant);
+    });
+%}
+
+### Test 3
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "beneficiaire_1": {
+      "qualite_beneficiaire": {
+        "2026": "beneficiaire_a"
+      },
+      "nb_heures_travaillees": {
+        "2026": 0
+      },
+      "unite_beneficiaire": {
+        "2026": null
+      }
+    }
+  },
+  "entreprises": {
+    "entreprise_3": {
+      "beneficiaires_handicap": ["beneficiaire_1"],
+      "effectif_salarie": {
+        "2026": 257.13
+      },
+      "soumis_obligation_emploi_handicapes": {
+        "2026": null
+      },
+      "nb_beneficiaires_devant_etre_employes": {
+        "2026": null
+      },
+      "a_depenses_annee_en_cours":                { "2026": true },
+      "a_employe_beneficiaires_annees_precedentes": { "2026": true },
+      "a_employe_beneficiaires_annee_en_cours":   { "2026": false },
+      "somme_depenses_ttc":                       { "2026": 47170 },
+      "eligible_doublement_cotisation":           { "2026": null },
+      "montant_doublement_contribution":          { "2026": null },
+      "contribution_avant_depenses_deductibles":  { "2026": null },
+      "montant_depenses_deductibles":             { "2026": null },
+      "montant_contribution":                     { "2026": null }
+    }
+  }
+}
+> {%
+    client.test("contribution = 0", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const doublement = response.body.entreprises["entreprise_3"]
+            .eligible_doublement_cotisation["2026"];
+        client.assert(doublement === false, "Attendu false, recu " + doublement);
+        const montant = response.body.entreprises["entreprise_3"]
+            .montant_contribution["2026"];
+        client.assert(montant === 2453030, "Attendu  2453030, recu " + montant);
+    });
+%}
+
+### Test 4
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "beneficiaire_1": {
+      "qualite_beneficiaire": {
+        "2026": "beneficiaire_b"
+      },
+      "nb_heures_travaillees": {
+        "2026": 588
+      },
+      "unite_beneficiaire": {
+        "2026": null
+      }
+    },
+    "beneficiaire_2": {
+      "qualite_beneficiaire": {
+        "2026": "beneficiaire_b"
+      },
+      "nb_heures_travaillees": {
+        "2026": 853
+      },
+      "unite_beneficiaire": {
+        "2026": null
+      }
+    }
+  },
+  "entreprises": {
+    "entreprise_4": {
+      "beneficiaires_handicap": ["beneficiaire_1", "beneficiaire_2"],
+      "effectif_salarie": {
+        "2026": 26
+      },
+      "soumis_obligation_emploi_handicapes": {
+        "2026": null
+      },
+      "nb_beneficiaires_devant_etre_employes": {
+        "2026": null
+      },
+      "a_depenses_annee_en_cours":                { "2026": false },
+      "a_employe_beneficiaires_annees_precedentes": { "2026": false },
+      "a_employe_beneficiaires_annee_en_cours":   { "2026": true },
+      "somme_depenses_ttc":                       { "2026": 0 },
+      "eligible_doublement_cotisation":           { "2026": null },
+      "montant_doublement_contribution":          { "2026": null },
+      "contribution_avant_depenses_deductibles":  { "2026": null },
+      "montant_depenses_deductibles":             { "2026": null },
+      "montant_contribution":                     { "2026": null }
+    }
+  }
+}
+> {%
+    client.test("contribution = 0", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const doublement = response.body.entreprises["entreprise_4"]
+            .eligible_doublement_cotisation["2026"];
+        client.assert(doublement === false, "Attendu false, recu " + doublement);
+        const montant = response.body.entreprises["entreprise_4"]
+            .montant_contribution["2026"];
+        client.assert(montant === 0, "Attendu  0, recu " + montant);
+    });
+%}
+
+### Test 5
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "beneficiaire_1": {
+      "qualite_beneficiaire": {
+        "2026": "beneficiaire_b"
+      },
+      "nb_heures_travaillees": {
+        "2026": 588
+      },
+      "unite_beneficiaire": {
+        "2026": null
+      }
+    },
+    "beneficiaire_2": {
+      "qualite_beneficiaire": {
+        "2026": "beneficiaire_b"
+      },
+      "nb_heures_travaillees": {
+        "2026": 853
+      },
+      "unite_beneficiaire": {
+        "2026": null
+      }
+    }
+  },
+  "entreprises": {
+    "entreprise_5": {
+      "beneficiaires_handicap": ["beneficiaire_1", "beneficiaire_2"],
+      "effectif_salarie": {
+        "2026": 71
+      },
+      "soumis_obligation_emploi_handicapes": {
+        "2026": null
+      },
+      "nb_beneficiaires_devant_etre_employes": {
+        "2026": null
+      },
+      "a_depenses_annee_en_cours":                { "2026": false },
+      "a_employe_beneficiaires_annees_precedentes": { "2026": false },
+      "a_employe_beneficiaires_annee_en_cours":   { "2026": true },
+      "somme_depenses_ttc":                       { "2026": 0 },
+      "eligible_doublement_cotisation":           { "2026": null },
+      "montant_doublement_contribution":          { "2026": null },
+      "contribution_avant_depenses_deductibles":  { "2026": null },
+      "montant_depenses_deductibles":             { "2026": null },
+      "montant_contribution":                     { "2026": null }
+    }
+  }
+}
+> {%
+    client.test("contribution = 0", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const doublement = response.body.entreprises["entreprise_5"]
+            .eligible_doublement_cotisation["2026"];
+        client.assert(doublement === false, "Attendu false, recu " + doublement);
+        const montant = response.body.entreprises["entreprise_5"]
+            .montant_contribution["2026"];
+        client.assert(montant === 116009, "Attendu  116009, recu " + montant);
+    });
+%}
+
+
+### Test 6
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "beneficiaire_1": {
+      "qualite_beneficiaire": {
+        "2026": "beneficiaire_a"
+      },
+      "nb_heures_travaillees": {
+        "2026": 0
+      },
+      "unite_beneficiaire": {
+        "2026": null
+      }
+    }
+  },
+  "entreprises": {
+    "entreprise_6": {
+      "beneficiaires_handicap": ["beneficiaire_1"],
+      "effectif_salarie": {
+        "2026": 38
+      },
+      "soumis_obligation_emploi_handicapes": {
+        "2026": null
+      },
+      "nb_beneficiaires_devant_etre_employes": {
+        "2026": null
+      },
+      "a_depenses_annee_en_cours":                { "2026": false },
+      "a_employe_beneficiaires_annees_precedentes": { "2026": false },
+      "a_employe_beneficiaires_annee_en_cours":   { "2026": true },
+      "somme_depenses_ttc":                       { "2026": 0 },
+      "eligible_doublement_cotisation":           { "2026": null },
+      "montant_doublement_contribution":          { "2026": null },
+      "contribution_avant_depenses_deductibles":  { "2026": null },
+      "montant_depenses_deductibles":             { "2026": null },
+      "montant_contribution":                     { "2026": null }
+    }
+  }
+}
+> {%
+    client.test("contribution = 0", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const doublement = response.body.entreprises["entreprise_6"]
+            .eligible_doublement_cotisation["2026"];
+        client.assert(doublement === false, "Attendu false, recu " + doublement);
+        const montant = response.body.entreprises["entreprise_6"]
+            .montant_contribution["2026"];
+        client.assert(montant === 0, "Attendu 0, recu " + montant);
+    });
+%}
+
+### Test 7
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "beneficiaire_1": {
+      "qualite_beneficiaire": {
+        "2026": "beneficiaire_a"
+      },
+      "nb_heures_travaillees": {
+        "2026": 0
+      },
+      "unite_beneficiaire": {
+        "2026": null
+      }
+    }
+  },
+  "entreprises": {
+    "entreprise_7": {
+      "beneficiaires_handicap": ["beneficiaire_1"],
+      "effectif_salarie": {
+        "2026": 89
+      },
+      "soumis_obligation_emploi_handicapes": {
+        "2026": null
+      },
+      "nb_beneficiaires_devant_etre_employes": {
+        "2026": null
+      },
+      "a_depenses_annee_en_cours":                { "2026": false },
+      "a_employe_beneficiaires_annees_precedentes": { "2026": false },
+      "a_employe_beneficiaires_annee_en_cours":   { "2026": true },
+      "somme_depenses_ttc":                       { "2026": 0 },
+      "eligible_doublement_cotisation":           { "2026": null },
+      "montant_doublement_contribution":          { "2026": null },
+      "contribution_avant_depenses_deductibles":  { "2026": null },
+      "montant_depenses_deductibles":             { "2026": null },
+      "montant_contribution":                     { "2026": null }
+    }
+  }
+}
+> {%
+    client.test("contribution = 0", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const doublement = response.body.entreprises["entreprise_7"]
+            .eligible_doublement_cotisation["2026"];
+        client.assert(doublement === false, "Attendu false, recu " + doublement);
+        const montant = response.body.entreprises["entreprise_7"]
+            .montant_contribution["2026"];
+        client.assert(montant === 400032, "Attendu 400032, recu " + montant);
+    });
+%}
+
+### Test 8
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "beneficiaire_1": {
+      "qualite_beneficiaire": {
+        "2026": "beneficiaire_a"
+      },
+      "nb_heures_travaillees": {
+        "2026": 0
+      },
+      "unite_beneficiaire": {
+        "2026": null
+      }
+    },
+    "beneficiaire_2": {
+      "qualite_beneficiaire": {
+        "2026": "beneficiaire_a"
+      },
+      "nb_heures_travaillees": {
+        "2026": 0
+      },
+      "unite_beneficiaire": {
+        "2026": null
+      }
+    }
+  },
+  "entreprises": {
+    "entreprise_8": {
+      "beneficiaires_handicap": ["beneficiaire_1"],
+      "effectif_salarie": {
+        "2026": 23
+      },
+      "soumis_obligation_emploi_handicapes": {
+        "2026": null
+      },
+      "nb_beneficiaires_devant_etre_employes": {
+        "2026": null
+      },
+      "a_depenses_annee_en_cours":                { "2026": false },
+      "a_employe_beneficiaires_annees_precedentes": { "2026": false },
+      "a_employe_beneficiaires_annee_en_cours":   { "2026": false },
+      "somme_depenses_ttc":                       { "2026": 0 },
+      "eligible_doublement_cotisation":           { "2026": null },
+      "montant_doublement_contribution":          { "2026": null },
+      "contribution_avant_depenses_deductibles":  { "2026": null },
+      "montant_depenses_deductibles":             { "2026": null },
+      "montant_contribution":                     { "2026": null }
+    }
+  }
+}
+> {%
+    client.test("contribution = 0", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const doublement = response.body.entreprises["entreprise_8"]
+            .eligible_doublement_cotisation["2026"];
+        client.assert(doublement === true, "Attendu true, recu " + doublement);
+        const montant = response.body.entreprises["entreprise_8"]
+            .montant_contribution["2026"];
+        client.assert(montant === 400032, "Attendu 400032, recu " + montant);
+    });
+%}
+
+### Test 9.1 - contrat
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "individu_technique": {}
+  },
+  "contrats": {
+    "contrat_services": {
+      "signataires": [],
+      "type_contrat": {
+        "2026": "services"
+      },
+      "prix_ht_fourniture": {
+        "2026": 120000
+      },
+      "cout_matiere_premiere": {
+        "2026": 0
+      },
+      "unite_contrat": {
+        "2026": null
+      }
+    }
+  }
+}
+> {%
+    client.test("Contrat services calcule 1.24 unite", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+
+        const result = response.body.contrats["contrat_services"].unite_contrat["2026"];
+        const expected = 0.05;
+        client.assert(result === expected, "Attendu " + expected + ", recu " + result);
+    });
+%}
+
+### Test 9.2 - contrat
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "individu_technique": {}
+  },
+  "contrats": {
+    "contrat_services": {
+      "signataires": [],
+      "type_contrat": {
+        "2026": "services"
+      },
+      "prix_ht_fourniture": {
+        "2026": 50000
+      },
+      "cout_matiere_premiere": {
+        "2026": 0
+      },
+      "unite_contrat": {
+        "2026": null
+      }
+    }
+  }
+}
+> {%
+    client.test("Contrat services calcule 1.24 unite", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+
+        const result = response.body.contrats["contrat_services"].unite_contrat["2026"];
+        const expected = 0.02;
+        client.assert(result === expected, "Attendu " + expected + ", recu " + result);
+    });
+%}
+
+### Test 9
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "beneficiaire_1": {
+      "qualite_beneficiaire": {
+        "2026": "beneficiaire_a"
+      },
+      "nb_heures_travaillees": {
+        "2026": 0
+      },
+      "unite_beneficiaire": {
+        "2026": null
+      }
+    },
+    "beneficiaire_2": {
+      "qualite_beneficiaire": {
+        "2026": "beneficiaire_a"
+      },
+      "nb_heures_travaillees": {
+        "2026": 0
+      },
+      "unite_beneficiaire": {
+        "2026": null
+      }
+    }
+  },
+  "entreprises": {
+    "entreprise_9": {
+      "beneficiaires_handicap": ["beneficiaire_1","beneficiaire_2"],
+      "effectif_salarie": {
+        "2026": 153
+      },
+      "soumis_obligation_emploi_handicapes": {
+        "2026": null
+      },
+      "nb_beneficiaires_devant_etre_employes": {
+        "2026": null
+      },
+      "a_depenses_annee_en_cours":                { "2026": true },
+      "somme_depenses_ttc":                       { "2026": 214000 },
+      "a_employe_beneficiaires_annees_precedentes": { "2026": false },
+      "a_employe_beneficiaires_annee_en_cours":   { "2026": true },
+      "a_contracte_annee_en_cours":               { "2026": true },
+      "somme_unites_contrats_services":           { "2026": 0.07 },
+      "somme_unites_contrats_disposition":         { "2026": 0.00 },
+      "eligible_doublement_cotisation":           { "2026": null },
+      "montant_doublement_contribution":          { "2026": null },
+      "contribution_avant_depenses_deductibles":  { "2026": null },
+      "montant_depenses_deductibles":             { "2026": null },
+      "montant_contribution":                     { "2026": null }
+    }
+  }
+}
+> {%
+    client.test("contribution = 0", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const doublement = response.body.entreprises["entreprise_9"]
+            .eligible_doublement_cotisation["2026"];
+        client.assert(doublement === false, "Attendu false, recu " + doublement);
+        const montant = response.body.entreprises["entreprise_9"]
+            .montant_contribution["2026"];
+        client.assert(montant === 251037, "Attendu 251037, recu " + montant);
+    });
+%}
+
+
+### Test 10.1 - contrat
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "individu_technique": {}
+  },
+  "contrats": {
+    "contrat_services": {
+      "signataires": [],
+      "type_contrat": {
+        "2026": "services"
+      },
+      "prix_ht_fourniture": {
+        "2026": 24623
+      },
+      "cout_matiere_premiere": {
+        "2026": 0
+      },
+      "unite_contrat": {
+        "2026": null
+      }
+    }
+  }
+}
+> {%
+    client.test("Contrat services calcule 1.24 unite", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+
+        const result = response.body.contrats["contrat_services"].unite_contrat["2026"];
+        const expected = 0.01;
+        client.assert(result === expected, "Attendu " + expected + ", recu " + result);
+    });
+%}
+
+### Test 10.2 - contrat
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "individu_technique": {}
+  },
+  "contrats": {
+    "contrat_services": {
+      "signataires": [],
+      "type_contrat": {
+        "2026": "services"
+      },
+      "prix_ht_fourniture": {
+        "2026": 46255
+      },
+      "cout_matiere_premiere": {
+        "2026": 0
+      },
+      "unite_contrat": {
+        "2026": null
+      }
+    }
+  }
+}
+> {%
+    client.test("Contrat services calcule 1.24 unite", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+
+        const result = response.body.contrats["contrat_services"].unite_contrat["2026"];
+        const expected = 0.02;
+        client.assert(result === expected, "Attendu " + expected + ", recu " + result);
+    });
+%}
+
+### Test 10
+POST {{baseUrl}}/calculate
+Content-Type: application/json
+
+{
+  "individus": {
+    "beneficiaire_1": {
+      "qualite_beneficiaire": {
+        "2026": "beneficiaire_a"
+      },
+      "nb_heures_travaillees": {
+        "2026": 0
+      },
+      "unite_beneficiaire": {
+        "2026": null
+      }
+    },
+    "beneficiaire_2": {
+      "qualite_beneficiaire": {
+        "2026": "beneficiaire_a"
+      },
+      "nb_heures_travaillees": {
+        "2026": 0
+      },
+      "unite_beneficiaire": {
+        "2026": null
+      }
+    }
+  },
+  "entreprises": {
+    "entreprise_10": {
+      "beneficiaires_handicap": ["beneficiaire_1","beneficiaire_2"],
+      "effectif_salarie": {
+        "2026": 293
+      },
+      "soumis_obligation_emploi_handicapes": {
+        "2026": null
+      },
+      "nb_beneficiaires_devant_etre_employes": {
+        "2026": null
+      },
+      "a_depenses_annee_en_cours":                { "2026": true },
+      "somme_depenses_ttc":                       { "2026": 87214 },
+      "a_employe_beneficiaires_annees_precedentes": { "2026": true },
+      "a_employe_beneficiaires_annee_en_cours":   { "2026": true },
+      "a_contracte_annee_en_cours":               { "2026": true },
+      "a_contracte_annees_precedentes":           { "2026": true },
+      "somme_unites_contrats_services":           { "2026": 0.03 },
+      "somme_unites_contrats_disposition":         { "2026": 0.00 },
+      "eligible_doublement_cotisation":           { "2026": null },
+      "montant_doublement_contribution":          { "2026": null },
+      "contribution_avant_depenses_deductibles":  { "2026": null },
+      "montant_depenses_deductibles":             { "2026": null },
+      "montant_contribution":                     { "2026": null }
+    }
+  }
+}
+> {%
+    client.test("contribution = 0", function() {
+        client.assert(response.status === 200, "Statut HTTP attendu : 200");
+        const doublement = response.body.entreprises["entreprise_10"]
+            .eligible_doublement_cotisation["2026"];
+        client.assert(doublement === false, "Attendu false, recu " + doublement);
+        const montant = response.body.entreprises["entreprise_10"]
+            .montant_contribution["2026"];
+        client.assert(montant === 2362982, "Attendu 2362982, recu " + montant);
+    });
+%}
