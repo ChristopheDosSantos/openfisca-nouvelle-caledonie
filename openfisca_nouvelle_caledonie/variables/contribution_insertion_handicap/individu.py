@@ -4,6 +4,7 @@ from openfisca_core.periods import YEAR
 from openfisca_nouvelle_caledonie.entities import Individu
 import numpy as np
 
+#  ------ Bénéficiaires Handicapés ------
 
 class TypeQualiteBeneficiaire(Enum):
     beneficiaire_a = "Choix A - CDI/CDD/intérim ≥ 6 mois et ≥ mi-temps"
@@ -48,4 +49,6 @@ class unite_beneficiaire(Variable):
             [1.0, nb_heures / heures_reference],
             default=0.0
         )
+
+# Variables liées aux contrats déplacées dans `unite_contrat.py`.
 

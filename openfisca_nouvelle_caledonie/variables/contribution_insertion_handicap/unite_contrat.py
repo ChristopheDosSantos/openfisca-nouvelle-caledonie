@@ -3,7 +3,7 @@ import numpy as np
 from openfisca_core.variables import Variable
 from openfisca_core.indexed_enums import Enum
 from openfisca_core.periods import YEAR
-from openfisca_nouvelle_caledonie.entities import Contrat
+from openfisca_nouvelle_caledonie.entities import Individu
 
 
 class TypeContratCIH(Enum):
@@ -15,38 +15,65 @@ class type_contrat(Variable):
     value_type = Enum
     possible_values = TypeContratCIH
     default_value = TypeContratCIH.services
-    entity = Contrat
+    entity = Individu
     definition_period = YEAR
     label = "Type du contrat"
 
 
 class prix_ht_fourniture(Variable):
     value_type = float
-    entity = Contrat
+    entity = Individu
     definition_period = YEAR
     label = "Prix HT de la fourniture au titre du contrat"
 
 
 class cout_matiere_premiere(Variable):
     value_type = float
-    entity = Contrat
+    entity = Individu
     definition_period = YEAR
     label = "Coût des matières premières associé au contrat"
 
 
-class unite_contrat(Variable):
+class unite_contrats_service(Variable):
     value_type = float
-    entity = Contrat
+    entity = Individu
     definition_period = YEAR
-    label = "Unités générées par ce contrat"
+    label = "Unités générées par un contrat de type SERVICES"
 
-    def formula(contrat, period, parameters):
-        prix = contrat('prix_ht_fourniture', period)
-        cout_matiere = contrat('cout_matiere_premiere', period)
+    def formula(individu, period, parameters):
+        type_ctr = individu("type_contrat", period)
+        types = type_ctr.possible_values
+        prix = individu("prix_ht_fourniture", period)
+        cout_matiere = individu("cout_matiere_premiere", period)
 
         p = parameters(period).contribution_insertion_handicap.obligation_emploi
         base = prix - cout_matiere
+        unites = np.floor(
+            base / (p.diviseur_unite_contrat_services * p.taux_horaire_smg) * 100,
+        ) / 100
 
-        # le diviseur pourrait différer entre SERVICES et DISPOSITION un jour,
-        # donc on le sort en paramètre plutôt qu'en constante en dur
-        return np.floor(base / (p.diviseur_unite_contrat * p.taux_horaire_smg) * 100) / 100
+        return np.where(type_ctr == types.services, unites, 0.0)
+
+
+class unite_contrat_disposition(Variable):
+    value_type = float
+    entity = Individu
+    definition_period = YEAR
+    label = "Unités générées par un contrat de type DISPOSITION"
+
+    def formula(individu, period, parameters):
+        type_ctr = individu("type_contrat", period)
+        types = type_ctr.possible_values
+        prix = individu("prix_ht_fourniture", period)
+        cout_matiere = individu("cout_matiere_premiere", period)
+
+        p = parameters(period).contribution_insertion_handicap.obligation_emploi
+        base = prix - cout_matiere
+        unites = np.floor(
+            base / (p.diviseur_unite_contrat_disposition * p.taux_horaire_smg) * 100,
+        ) / 100
+
+        return np.where(type_ctr == types.disposition, unites, 0.0)
+
+
+# La variable de compatibilite `unite_contrat` est supprimee volontairement.

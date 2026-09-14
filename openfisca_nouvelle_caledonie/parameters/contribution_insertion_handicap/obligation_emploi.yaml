@@ -26,8 +26,14 @@ heures_reference:
     2020-01-01:
       value: 2028
 
-diviseur_unite_contrat:
-  description: Diviseur utilisé pour convertir un montant de contrat en unités
+diviseur_unite_contrat_services:
+  description: Diviseur utilisé pour convertir un montant de contrat SERVICES en unités
+  values:
+    2020-01-01:
+      value: 2000
+
+diviseur_unite_contrat_disposition:
+  description: Diviseur utilisé pour convertir un montant de contrat DISPOSITION en unités
   values:
     2020-01-01:
       value: 2000

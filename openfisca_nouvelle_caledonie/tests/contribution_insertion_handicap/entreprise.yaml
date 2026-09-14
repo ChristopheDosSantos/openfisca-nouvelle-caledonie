@@ -119,68 +119,167 @@
 - name: Total unites contrats sans plafonnement
   period: 2026
   input:
-    effectif_salarie: [100]
-    somme_unites_contrats_services: [0.4]
-    somme_unites_contrats_disposition: [0.5]
+    individus:
+      contrat_service:
+        type_contrat: services
+        prix_ht_fourniture: 800064
+        cout_matiere_premiere: 0
+      contrat_disposition:
+        type_contrat: disposition
+        prix_ht_fourniture: 1000080
+        cout_matiere_premiere: 0
+    entreprises:
+      entreprise_test:
+        effectif_salarie: 100
+        contrats_handicap:
+          - contrat_service
+          - contrat_disposition
   output:
-    nb_beneficiaires_devant_etre_employes: [2]
-    total_general_unites_contrats: [0.9]
+    entreprises:
+      entreprise_test:
+        nb_beneficiaires_devant_etre_employes: 2
+        somme_unites_contrats_services: 0.4
+        somme_unites_contrats_disposition: 0.5
+        total_general_unites_contrats: 0.9
 
 - name: Total unites contrats plafonne a la moitie des beneficiaires dus
   period: 2026
   input:
-    effectif_salarie: [120]
-    somme_unites_contrats_services: [1.1]
-    somme_unites_contrats_disposition: [0.8]
+    individus:
+      contrat_service:
+        type_contrat: services
+        prix_ht_fourniture: 2200176
+        cout_matiere_premiere: 0
+      contrat_disposition:
+        type_contrat: disposition
+        prix_ht_fourniture: 1600128
+        cout_matiere_premiere: 0
+    entreprises:
+      entreprise_test:
+        effectif_salarie: 120
+        contrats_handicap:
+          - contrat_service
+          - contrat_disposition
   output:
-    nb_beneficiaires_devant_etre_employes: [3]
-    total_general_unites_contrats: [1.5]
+    entreprises:
+      entreprise_test:
+        nb_beneficiaires_devant_etre_employes: 3
+        somme_unites_contrats_services: 1.1
+        somme_unites_contrats_disposition: 0.8
+        total_general_unites_contrats: 1.5
 
 - name: Total unites contrats nul si entreprise non soumise
   period: 2026
   input:
-    effectif_salarie: [20]
-    somme_unites_contrats_services: [1.2]
-    somme_unites_contrats_disposition: [0.7]
+    individus:
+      contrat_service:
+        type_contrat: services
+        prix_ht_fourniture: 2400192
+        cout_matiere_premiere: 0
+      contrat_disposition:
+        type_contrat: disposition
+        prix_ht_fourniture: 1400112
+        cout_matiere_premiere: 0
+    entreprises:
+      entreprise_test:
+        effectif_salarie: 20
+        contrats_handicap:
+          - contrat_service
+          - contrat_disposition
   output:
-    nb_beneficiaires_devant_etre_employes: [0]
-    total_general_unites_contrats: [0]
+    entreprises:
+      entreprise_test:
+        nb_beneficiaires_devant_etre_employes: 0
+        somme_unites_contrats_services: 1.2
+        somme_unites_contrats_disposition: 0.69
+        total_general_unites_contrats: 0
 
 - name: Beneficiaires manquants avec troncature a 2 decimales
   period: 2026
   input:
-    effectif_salarie: [100]
-    somme_unites_beneficiaires: [1.23]
-    somme_unites_contrats_services: [0.5]
-    somme_unites_contrats_disposition: [0]
+    individus:
+      beneficiaire_a:
+        qualite_beneficiaire: beneficiaire_a
+      beneficiaire_b:
+        qualite_beneficiaire: beneficiaire_b
+        nb_heures_travaillees: 466
+      contrat_service:
+        type_contrat: services
+        prix_ht_fourniture: 1000080
+        cout_matiere_premiere: 0
+    entreprises:
+      entreprise_test:
+        effectif_salarie: 100
+        beneficiaires_handicap:
+          - beneficiaire_a
+          - beneficiaire_b
+        contrats_handicap:
+          - contrat_service
   output:
-    nb_beneficiaires_devant_etre_employes: [2]
-    total_general_unites_contrats: [0.5]
-    beneficiaires_manquants: [0.26]
+    entreprises:
+      entreprise_test:
+        nb_beneficiaires_devant_etre_employes: 2
+        somme_unites_beneficiaires: 1.22
+        total_general_unites_contrats: 0.5
+        beneficiaires_manquants: 0.27
 
 - name: Beneficiaires manquants nuls si total atteint le besoin
   period: 2026
   input:
-    effectif_salarie: [100]
-    somme_unites_beneficiaires: [1.2]
-    somme_unites_contrats_services: [0.8]
-    somme_unites_contrats_disposition: [0]
+    individus:
+      beneficiaire_a:
+        qualite_beneficiaire: beneficiaire_a
+      beneficiaire_b:
+        qualite_beneficiaire: beneficiaire_b
+        nb_heures_travaillees: 405
+      contrat_service:
+        type_contrat: services
+        prix_ht_fourniture: 1600128
+        cout_matiere_premiere: 0
+    entreprises:
+      entreprise_test:
+        effectif_salarie: 100
+        beneficiaires_handicap:
+          - beneficiaire_a
+          - beneficiaire_b
+        contrats_handicap:
+          - contrat_service
   output:
-    nb_beneficiaires_devant_etre_employes: [2]
-    total_general_unites_contrats: [0.8]
-    beneficiaires_manquants: [0]
+    entreprises:
+      entreprise_test:
+        nb_beneficiaires_devant_etre_employes: 2
+        somme_unites_beneficiaires: 1.19
+        total_general_unites_contrats: 0.8
+        beneficiaires_manquants: 0
 
 - name: Beneficiaires manquants nuls si total depasse le besoin
   period: 2026
   input:
-    effectif_salarie: [100]
-    somme_unites_beneficiaires: [1.9]
-    somme_unites_contrats_services: [0.8]
-    somme_unites_contrats_disposition: [0]
+    individus:
+      beneficiaire_a:
+        qualite_beneficiaire: beneficiaire_a
+      beneficiaire_b:
+        qualite_beneficiaire: beneficiaire_b
+        nb_heures_travaillees: 1825
+      contrat_service:
+        type_contrat: services
+        prix_ht_fourniture: 1600128
+        cout_matiere_premiere: 0
+    entreprises:
+      entreprise_test:
+        effectif_salarie: 100
+        beneficiaires_handicap:
+          - beneficiaire_a
+          - beneficiaire_b
+        contrats_handicap:
+          - contrat_service
   output:
-    nb_beneficiaires_devant_etre_employes: [2]
-    total_general_unites_contrats: [0.8]
-    beneficiaires_manquants: [0]
+    entreprises:
+      entreprise_test:
+        nb_beneficiaires_devant_etre_employes: 2
+        somme_unites_beneficiaires: 1.89
+        total_general_unites_contrats: 0.8
+        beneficiaires_manquants: 0
 
 # ── Étape H : contribution avant dépenses déductibles ─────────────────────────
 

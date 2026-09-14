@@ -113,6 +113,12 @@ Entreprise = build_entity(
             "label": "Beneficiaires handicap",
             "doc": "Beneficiaires handicap declarés pour la CIH.",
         },
+        {
+            "key": "contrat_handicap",
+            "plural": "contrats_handicap",
+            "label": "Contrats Handicap",
+            "doc": "Contrats de sous-traitance ou de mise à disposition de personnel pris en compte pour la CIH.",
+        },
     ],
 )
 

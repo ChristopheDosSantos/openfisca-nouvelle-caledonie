@@ -43,14 +43,19 @@ class nb_beneficiaires_devant_etre_employes(Variable):
         taux = params.taux_beneficiaires
         minimum = params.minimum_fraction
 
-        valeur = effectif * taux
-        valeur_avec_minimum = where(
-            (valeur >= minimum) & (valeur < 1),
+        # Calcul théorique du nombre de bénéficiaires à employer
+        nombre_theorique = effectif * taux
+
+        # Application du minimum : si compris entre [minimum, 1[, retenir minimum
+        # Sinon, arrondir à l'entier inférieur
+        nombre_ajuste = where(
+            (nombre_theorique >= minimum) & (nombre_theorique < 1),
             minimum,
-            valeur // 1,
+            nombre_theorique // 1,
         )
 
-        return where(effectif > seuil, valeur_avec_minimum, 0)
+        # Appliquer le seuil d'effectif : 0 si entreprise sous le seuil
+        return where(effectif > seuil, nombre_ajuste, 0)
 
 class somme_unites_beneficiaires(Variable):
     value_type = float
@@ -69,13 +74,23 @@ class somme_unites_contrats_services(Variable):
     value_type = float
     entity = Entreprise
     definition_period = YEAR
-    label = "Somme des unités des contrats SERVICES (calculée en amont, agrégée depuis Contrat)"
+    label = "Somme des unités des contrats SERVICES"
+
+    def formula(entreprise, period):
+        unites_services = entreprise.members("unite_contrats_service", period)
+        total = entreprise.sum(unites_services)
+        return np.floor(total * 100) / 100
 
 class somme_unites_contrats_disposition(Variable):
     value_type = float
     entity = Entreprise
     definition_period = YEAR
-    label = "Somme des unités des contrats DISPOSITION (calculée en amont, agrégée depuis Contrat)"
+    label = "Somme des unités des contrats DISPOSITION"
+
+    def formula(entreprise, period):
+        unites_disposition = entreprise.members("unite_contrat_disposition", period)
+        total = entreprise.sum(unites_disposition)
+        return np.floor(total * 100) / 100
 
 
 class total_general_unites_contrats(Variable):

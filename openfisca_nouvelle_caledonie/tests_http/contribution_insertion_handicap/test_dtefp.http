@@ -505,11 +505,7 @@ Content-Type: application/json
 
 {
   "individus": {
-    "individu_technique": {}
-  },
-  "contrats": {
     "contrat_services": {
-      "signataires": [],
       "type_contrat": {
         "2026": "services"
       },
@@ -519,17 +515,16 @@ Content-Type: application/json
       "cout_matiere_premiere": {
         "2026": 0
       },
-      "unite_contrat": {
+      "unite_contrats_service": {
         "2026": null
       }
     }
-  }
 }
 > {%
     client.test("Contrat services calcule 1.24 unite", function() {
         client.assert(response.status === 200, "Statut HTTP attendu : 200");
 
-        const result = response.body.contrats["contrat_services"].unite_contrat["2026"];
+        const result = response.body.individus["contrat_services"].unite_contrats_service["2026"];
         const expected = 0.05;
         client.assert(result === expected, "Attendu " + expected + ", recu " + result);
     });
@@ -541,11 +536,7 @@ Content-Type: application/json
 
 {
   "individus": {
-    "individu_technique": {}
-  },
-  "contrats": {
     "contrat_services": {
-      "signataires": [],
       "type_contrat": {
         "2026": "services"
       },
@@ -555,17 +546,16 @@ Content-Type: application/json
       "cout_matiere_premiere": {
         "2026": 0
       },
-      "unite_contrat": {
+      "unite_contrats_service": {
         "2026": null
       }
     }
-  }
 }
 > {%
     client.test("Contrat services calcule 1.24 unite", function() {
         client.assert(response.status === 200, "Statut HTTP attendu : 200");
 
-        const result = response.body.contrats["contrat_services"].unite_contrat["2026"];
+        const result = response.body.individus["contrat_services"].unite_contrats_service["2026"];
         const expected = 0.02;
         client.assert(result === expected, "Attendu " + expected + ", recu " + result);
     });
@@ -646,11 +636,7 @@ Content-Type: application/json
 
 {
   "individus": {
-    "individu_technique": {}
-  },
-  "contrats": {
     "contrat_services": {
-      "signataires": [],
       "type_contrat": {
         "2026": "services"
       },
@@ -660,17 +646,16 @@ Content-Type: application/json
       "cout_matiere_premiere": {
         "2026": 0
       },
-      "unite_contrat": {
+      "unite_contrats_service": {
         "2026": null
       }
     }
-  }
 }
 > {%
     client.test("Contrat services calcule 1.24 unite", function() {
         client.assert(response.status === 200, "Statut HTTP attendu : 200");
 
-        const result = response.body.contrats["contrat_services"].unite_contrat["2026"];
+        const result = response.body.individus["contrat_services"].unite_contrats_service["2026"];
         const expected = 0.01;
         client.assert(result === expected, "Attendu " + expected + ", recu " + result);
     });
@@ -682,11 +667,7 @@ Content-Type: application/json
 
 {
   "individus": {
-    "individu_technique": {}
-  },
-  "contrats": {
     "contrat_services": {
-      "signataires": [],
       "type_contrat": {
         "2026": "services"
       },
@@ -696,17 +677,16 @@ Content-Type: application/json
       "cout_matiere_premiere": {
         "2026": 0
       },
-      "unite_contrat": {
+      "unite_contrats_service": {
         "2026": null
       }
     }
-  }
 }
 > {%
     client.test("Contrat services calcule 1.24 unite", function() {
         client.assert(response.status === 200, "Statut HTTP attendu : 200");
 
-        const result = response.body.contrats["contrat_services"].unite_contrat["2026"];
+        const result = response.body.individus["contrat_services"].unite_contrats_service["2026"];
         const expected = 0.02;
         client.assert(result === expected, "Attendu " + expected + ", recu " + result);
     });

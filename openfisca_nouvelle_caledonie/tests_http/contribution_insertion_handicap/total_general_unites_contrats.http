@@ -7,19 +7,41 @@ Content-Type: application/json
 
 {
   "individus": {
-    "individu_technique": {}
+    "contrat_service": {
+      "type_contrat": {
+        "2026": "services"
+      },
+      "prix_ht_fourniture": {
+        "2026": 800064
+      },
+      "cout_matiere_premiere": {
+        "2026": 0
+      }
+    },
+    "contrat_disposition": {
+      "type_contrat": {
+        "2026": "disposition"
+      },
+      "prix_ht_fourniture": {
+        "2026": 1000080
+      },
+      "cout_matiere_premiere": {
+        "2026": 0
+      }
+    }
   },
   "entreprises": {
     "entreprise_non_plafonnee": {
       "beneficiaires_handicap": [],
+      "contrats_handicap": ["contrat_service", "contrat_disposition"],
       "effectif_salarie": {
         "2026": 100
       },
       "somme_unites_contrats_services": {
-        "2026": 0.4
+        "2026": null
       },
       "somme_unites_contrats_disposition": {
-        "2026": 0.5
+        "2026": null
       },
       "nb_beneficiaires_devant_etre_employes": {
         "2026": null
@@ -36,9 +58,13 @@ Content-Type: application/json
         client.assert(response.status === 200, "Statut HTTP attendu : 200");
 
         const nbDus = response.body.entreprises["entreprise_non_plafonnee"].nb_beneficiaires_devant_etre_employes["2026"];
+        const sommeServices = response.body.entreprises["entreprise_non_plafonnee"].somme_unites_contrats_services["2026"];
+        const sommeDisposition = response.body.entreprises["entreprise_non_plafonnee"].somme_unites_contrats_disposition["2026"];
         const total = response.body.entreprises["entreprise_non_plafonnee"].total_general_unites_contrats["2026"];
 
         client.assert(nbDus === 2.0, "Beneficiaires dus attendus 2.0, recu " + nbDus);
+        client.assert(sommeServices === 0.4, "Somme services attendue 0.4, recue " + sommeServices);
+        client.assert(sommeDisposition === 0.5, "Somme disposition attendue 0.5, recue " + sommeDisposition);
         client.assert(total === 0.9, "Total attendu 0.9, recu " + total);
     });
 %}
@@ -49,19 +75,41 @@ Content-Type: application/json
 
 {
   "individus": {
-    "individu_technique": {}
+    "contrat_service": {
+      "type_contrat": {
+        "2026": "services"
+      },
+      "prix_ht_fourniture": {
+        "2026": 2200176
+      },
+      "cout_matiere_premiere": {
+        "2026": 0
+      }
+    },
+    "contrat_disposition": {
+      "type_contrat": {
+        "2026": "disposition"
+      },
+      "prix_ht_fourniture": {
+        "2026": 1600128
+      },
+      "cout_matiere_premiere": {
+        "2026": 0
+      }
+    }
   },
   "entreprises": {
     "entreprise_plafonnee": {
       "beneficiaires_handicap": [],
+      "contrats_handicap": ["contrat_service", "contrat_disposition"],
       "effectif_salarie": {
         "2026": 120
       },
       "somme_unites_contrats_services": {
-        "2026": 1.1
+        "2026": null
       },
       "somme_unites_contrats_disposition": {
-        "2026": 0.8
+        "2026": null
       },
       "nb_beneficiaires_devant_etre_employes": {
         "2026": null
@@ -78,9 +126,13 @@ Content-Type: application/json
         client.assert(response.status === 200, "Statut HTTP attendu : 200");
 
         const nbDus = response.body.entreprises["entreprise_plafonnee"].nb_beneficiaires_devant_etre_employes["2026"];
+        const sommeServices = response.body.entreprises["entreprise_plafonnee"].somme_unites_contrats_services["2026"];
+        const sommeDisposition = response.body.entreprises["entreprise_plafonnee"].somme_unites_contrats_disposition["2026"];
         const total = response.body.entreprises["entreprise_plafonnee"].total_general_unites_contrats["2026"];
 
         client.assert(nbDus === 3.0, "Beneficiaires dus attendus 3.0, recu " + nbDus);
+        client.assert(sommeServices === 1.1, "Somme services attendue 1.1, recue " + sommeServices);
+        client.assert(sommeDisposition === 0.8, "Somme disposition attendue 0.8, recue " + sommeDisposition);
         client.assert(total === 1.5, "Total attendu 1.5, recu " + total);
     });
 %}
@@ -91,19 +143,41 @@ Content-Type: application/json
 
 {
   "individus": {
-    "individu_technique": {}
+    "contrat_service": {
+      "type_contrat": {
+        "2026": "services"
+      },
+      "prix_ht_fourniture": {
+        "2026": 2400192
+      },
+      "cout_matiere_premiere": {
+        "2026": 0
+      }
+    },
+    "contrat_disposition": {
+      "type_contrat": {
+        "2026": "disposition"
+      },
+      "prix_ht_fourniture": {
+        "2026": 1400112
+      },
+      "cout_matiere_premiere": {
+        "2026": 0
+      }
+    }
   },
   "entreprises": {
     "entreprise_non_soumise": {
       "beneficiaires_handicap": [],
+      "contrats_handicap": ["contrat_service", "contrat_disposition"],
       "effectif_salarie": {
         "2026": 20
       },
       "somme_unites_contrats_services": {
-        "2026": 1.2
+        "2026": null
       },
       "somme_unites_contrats_disposition": {
-        "2026": 0.7
+        "2026": null
       },
       "nb_beneficiaires_devant_etre_employes": {
         "2026": null
@@ -120,9 +194,13 @@ Content-Type: application/json
         client.assert(response.status === 200, "Statut HTTP attendu : 200");
 
         const nbDus = response.body.entreprises["entreprise_non_soumise"].nb_beneficiaires_devant_etre_employes["2026"];
+        const sommeServices = response.body.entreprises["entreprise_non_soumise"].somme_unites_contrats_services["2026"];
+        const sommeDisposition = response.body.entreprises["entreprise_non_soumise"].somme_unites_contrats_disposition["2026"];
         const total = response.body.entreprises["entreprise_non_soumise"].total_general_unites_contrats["2026"];
 
         client.assert(nbDus === 0.0, "Beneficiaires dus attendus 0.0, recu " + nbDus);
+        client.assert(sommeServices === 1.2, "Somme services attendue 1.2, recue " + sommeServices);
+        client.assert(sommeDisposition === 0.7, "Somme disposition attendue 0.7, recue " + sommeDisposition);
         client.assert(total === 0.0, "Total attendu 0.0, recu " + total);
     });
 %}

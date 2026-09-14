@@ -8,12 +8,12 @@
 #   seul paramètre de façon fiable dans cette version ; on documente donc le
 #   calcul en clair plutôt que d'ancrer les paramètres dans le test lui-même.
 
-# ── Cas avec valeur absolue (dépend de diviseur_unite_contrat et taux_horaire_smg) ──
+# ── Cas avec valeur absolue (dépend des diviseurs et de taux_horaire_smg) ──
 
 - name: Contrat services calcule les unites sur la base nette
   period: 2026
   # base = 3 000 000 - 500 000 = 2 500 000
-  # floor(2 500 000 / (diviseur_unite_contrat * taux_horaire_smg) * 100) / 100
+  # floor(2 500 000 / (diviseur_unite_contrat_services * taux_horaire_smg) * 100) / 100
   # avec diviseur=2000 et taux_horaire_smg=1000.08 (valeur 2026) :
   #   = floor(2 500 000 / 2 000 160 * 100) / 100 = floor(124.99...) / 100 = 1.24
   input:
@@ -21,7 +21,8 @@
     prix_ht_fourniture: [3000000]
     cout_matiere_premiere: [500000]
   output:
-    unite_contrat: [1.24]
+    unite_contrats_service: [1.24]
+    unite_contrat_disposition: [0]
 
 - name: Contrat disposition applique la troncature a 2 decimales
   period: 2026
@@ -32,7 +33,8 @@
     prix_ht_fourniture: [2499999]
     cout_matiere_premiere: [0]
   output:
-    unite_contrat: [1.24]
+    unite_contrats_service: [0]
+    unite_contrat_disposition: [1.24]
 
 # ── Invariants logiques (indépendants de la valeur du SMG) ────────────────────
 
@@ -43,15 +45,15 @@
     prix_ht_fourniture: [1200000]
     cout_matiere_premiere: [1200000]
   output:
-    unite_contrat: [0]
+    unite_contrats_service: [0]
+    unite_contrat_disposition: [0]
 
-- name: SERVICES et DISPOSITION suivent la meme formule pour un meme montant
+- name: SERVICES et DISPOSITION ont chacun leur unite active selon le type
   period: 2026
-  # Les deux types de contrats utilisent actuellement la même formule ;
-  # ce test échouera si on introduit une divergence non intentionnelle.
   input:
     type_contrat: [services, disposition]
     prix_ht_fourniture: [3000000, 3000000]
     cout_matiere_premiere: [500000, 500000]
   output:
-    unite_contrat: [1.24, 1.24]
+    unite_contrats_service: [1.24, 0]
+    unite_contrat_disposition: [0, 1.24]
