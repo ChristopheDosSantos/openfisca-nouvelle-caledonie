@@ -65,9 +65,10 @@ class somme_unites_beneficiaires(Variable):
 
     def formula(entreprise, period):
         unites_individuelles = entreprise.members("unite_beneficiaire", period)
-        # Somme en centièmes pour éviter les pertes liées aux flottants binaires.
-        total_centiemes = entreprise.sum(np.rint(np.floor(unites_individuelles * 100)))
-        return total_centiemes / 100
+        unites_f64 = unites_individuelles.astype(np.float64)
+        # Somme d'abord, puis floor à 2 décimales comme en Java (setScale(2, RoundingMode.DOWN))
+        total = entreprise.sum(unites_f64)
+        return np.floor(total * 100) / 100
 
 class somme_unites_contrats_services(Variable):
     value_type = float
@@ -316,7 +317,8 @@ class somme_depenses_ttc(Variable):
 
     def formula(entreprise, period):
         depenses_individuelles = entreprise.members("depense_handicap", period)
-        total = entreprise.sum(depenses_individuelles)
+        depenses_f64 = depenses_individuelles.astype(np.float64)
+        total = entreprise.sum(depenses_f64)
         return np.floor(total * 100) / 100
 
 

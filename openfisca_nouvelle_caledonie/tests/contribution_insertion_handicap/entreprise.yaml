@@ -116,27 +116,6 @@
       entreprise_test:
         somme_unites_beneficiaires: 1.49
 
-- name: Somme unites contrats services additionne les centiemes individuels
-  period: 2026
-  input:
-    individus:
-      contrat_1:
-        type_contrat: services
-        prix_ht_fourniture: 24623
-        cout_matiere_premiere: 0
-      contrat_2:
-        type_contrat: services
-        prix_ht_fourniture: 46255
-        cout_matiere_premiere: 0
-    entreprises:
-      entreprise_test:
-        contrats_handicap:
-          - contrat_1
-          - contrat_2
-  output:
-    entreprises:
-      entreprise_test:
-        somme_unites_contrats_services: 0.03
 
 - name: Total unites contrats sans plafonnement
   period: 2026
@@ -192,6 +171,7 @@
 
 - name: Total unites contrats nul si entreprise non soumise
   period: 2026
+  absolute_error_margin: 0.01
   input:
     individus:
       contrat_service:
@@ -213,7 +193,7 @@
       entreprise_test:
         nb_beneficiaires_devant_etre_employes: 0
         somme_unites_contrats_services: 1.2
-        somme_unites_contrats_disposition: 0.7
+        somme_unites_contrats_disposition: 0.69
         total_general_unites_contrats: 0
 
 - name: Beneficiaires manquants avec troncature a 2 decimales

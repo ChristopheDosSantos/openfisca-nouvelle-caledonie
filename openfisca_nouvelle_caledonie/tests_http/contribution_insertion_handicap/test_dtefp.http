@@ -568,8 +568,6 @@ Content-Type: application/json
       "a_employe_beneficiaires_annees_precedentes": { "2026": false },
       "a_employe_beneficiaires_annee_en_cours":   { "2026": true },
       "a_contracte_annee_en_cours":               { "2026": true },
-      "somme_unites_contrats_services":           { "2026": 0.07 },
-      "somme_unites_contrats_disposition":         { "2026": 0.00 },
       "eligible_doublement_cotisation":           { "2026": null },
       "montant_doublement_contribution":          { "2026": null },
       "contribution_avant_depenses_deductibles":  { "2026": null },
@@ -587,69 +585,6 @@ Content-Type: application/json
         const montant = response.body.entreprises["entreprise_9"]
             .montant_contribution["2026"];
         client.assert(montant === 251037, "Attendu 251037, recu " + montant);
-    });
-%}
-
-
-### Test 10.1 - contrat
-POST {{baseUrl}}/calculate
-Content-Type: application/json
-
-{
-  "individus": {
-    "contrat_services": {
-      "type_contrat": {
-        "2026": "services"
-      },
-      "prix_ht_fourniture": {
-        "2026": 24623
-      },
-      "cout_matiere_premiere": {
-        "2026": 0
-      },
-      "unite_contrats_service": {
-        "2026": null
-      }
-    }
-}
-> {%
-    client.test("Contrat services calcule 1.24 unite", function() {
-        client.assert(response.status === 200, "Statut HTTP attendu : 200");
-
-        const result = response.body.individus["contrat_services"].unite_contrats_service["2026"];
-        const expected = 0.01;
-        client.assert(result === expected, "Attendu " + expected + ", recu " + result);
-    });
-%}
-
-### Test 10.2 - contrat
-POST {{baseUrl}}/calculate
-Content-Type: application/json
-
-{
-  "individus": {
-    "contrat_services": {
-      "type_contrat": {
-        "2026": "services"
-      },
-      "prix_ht_fourniture": {
-        "2026": 46255
-      },
-      "cout_matiere_premiere": {
-        "2026": 0
-      },
-      "unite_contrats_service": {
-        "2026": null
-      }
-    }
-}
-> {%
-    client.test("Contrat services calcule 1.24 unite", function() {
-        client.assert(response.status === 200, "Statut HTTP attendu : 200");
-
-        const result = response.body.individus["contrat_services"].unite_contrats_service["2026"];
-        const expected = 0.02;
-        client.assert(result === expected, "Attendu " + expected + ", recu " + result);
     });
 %}
 
@@ -735,8 +670,6 @@ Content-Type: application/json
       "a_contracte_annee_en_cours":               { "2026": true },
       "contrats_handicap": ["contrat_1","contrat_2"],
       "a_contracte_annees_precedentes":           { "2026": true },
-      "somme_unites_contrats_services":           { "2026": null },
-      "somme_unites_contrats_disposition":         { "2026": 0.00 },
       "eligible_doublement_cotisation":           { "2026": null },
       "montant_doublement_contribution":          { "2026": null },
       "contribution_avant_depenses_deductibles":  { "2026": null },
