@@ -157,10 +157,15 @@ POST {{baseUrl}}/calculate
 Content-Type: application/json
 
 {
-  "individus": { "individu_technique": {} },
+  "individus": {
+    "depense_1": {
+      "depense_handicap": { "2026": 200000 }
+    }
+  },
   "entreprises": {
     "e_chaine_sans_doublement": {
       "beneficiaires_handicap": [],
+      "depenses_handicap": ["depense_1"],
       "effectif_salarie":                          { "2026": 50 },
       "somme_unites_beneficiaires":                { "2026": 0 },
       "somme_unites_contrats_services":            { "2026": 0 },
@@ -171,7 +176,6 @@ Content-Type: application/json
       "a_contracte_annee_en_cours":                { "2026": false },
       "a_contracte_annees_precedentes":            { "2026": false },
       "a_depenses_annee_en_cours":                 { "2026": true },
-      "somme_depenses_ttc":                        { "2026": 200000 },
       "contribution_avant_depenses_deductibles":   { "2026": null },
       "montant_doublement_contribution":           { "2026": null },
       "montant_depenses_deductibles":              { "2026": null },
@@ -206,10 +210,15 @@ POST {{baseUrl}}/calculate
 Content-Type: application/json
 
 {
-  "individus": { "individu_technique": {} },
+  "individus": {
+    "depense_1": {
+      "depense_handicap": { "2026": 300000 }
+    }
+  },
   "entreprises": {
     "e_chaine_avec_doublement": {
       "beneficiaires_handicap": [],
+      "depenses_handicap": ["depense_1"],
       "effectif_salarie":                          { "2026": 50 },
       "somme_unites_beneficiaires":                { "2026": 0 },
       "somme_unites_contrats_services":            { "2026": 0 },
@@ -220,7 +229,6 @@ Content-Type: application/json
       "a_contracte_annee_en_cours":                { "2026": false },
       "a_contracte_annees_precedentes":            { "2026": false },
       "a_depenses_annee_en_cours":                 { "2026": true },
-      "somme_depenses_ttc":                        { "2026": 300000 },
       "contribution_avant_depenses_deductibles":   { "2026": null },
       "montant_doublement_contribution":           { "2026": null },
       "montant_depenses_deductibles":              { "2026": null },

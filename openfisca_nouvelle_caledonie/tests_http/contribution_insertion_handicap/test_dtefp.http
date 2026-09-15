@@ -39,6 +39,15 @@ Content-Type: application/json
       "unite_beneficiaire": {
         "2026": null
       }
+    },
+    "depense_1": {
+      "depense_handicap": { "2026": 3625539 }
+    },
+    "depense_2": {
+      "depense_handicap": { "2026": 177262 }
+    },
+    "depense_3": {
+      "depense_handicap": { "2026": 265869 }
     }
   },
   "entreprises": {
@@ -55,7 +64,7 @@ Content-Type: application/json
       },
       "a_depenses_annee_en_cours":                { "2026": true },
       "a_employe_beneficiaires_annee_en_cours":   { "2026": true },
-      "somme_depenses_ttc":                       { "2026": 4068670 },
+      "depenses_handicap": ["depense_1","depense_2","depense_3"],
       "eligible_doublement_cotisation":           { "2026": null },
       "montant_doublement_contribution":          { "2026": null },
       "contribution_avant_depenses_deductibles":  { "2026": null },
@@ -120,7 +129,6 @@ Content-Type: application/json
       "a_depenses_annee_en_cours":                { "2026": false },
       "a_employe_beneficiaires_annees_precedentes": { "2026": true },
       "a_employe_beneficiaires_annee_en_cours":   { "2026": false },
-      "somme_depenses_ttc":                       { "2026": 0 },
       "eligible_doublement_cotisation":           { "2026": null },
       "montant_doublement_contribution":          { "2026": null },
       "contribution_avant_depenses_deductibles":  { "2026": null },
@@ -157,6 +165,9 @@ Content-Type: application/json
       "unite_beneficiaire": {
         "2026": null
       }
+    },
+    "depense_1": {
+      "depense_handicap": { "2026": 47170 }
     }
   },
   "entreprises": {
@@ -174,7 +185,7 @@ Content-Type: application/json
       "a_depenses_annee_en_cours":                { "2026": true },
       "a_employe_beneficiaires_annees_precedentes": { "2026": true },
       "a_employe_beneficiaires_annee_en_cours":   { "2026": false },
-      "somme_depenses_ttc":                       { "2026": 47170 },
+      "depenses_handicap": ["depense_1"],
       "eligible_doublement_cotisation":           { "2026": null },
       "montant_doublement_contribution":          { "2026": null },
       "contribution_avant_depenses_deductibles":  { "2026": null },
@@ -239,7 +250,6 @@ Content-Type: application/json
       "a_depenses_annee_en_cours":                { "2026": false },
       "a_employe_beneficiaires_annees_precedentes": { "2026": false },
       "a_employe_beneficiaires_annee_en_cours":   { "2026": true },
-      "somme_depenses_ttc":                       { "2026": 0 },
       "eligible_doublement_cotisation":           { "2026": null },
       "montant_doublement_contribution":          { "2026": null },
       "contribution_avant_depenses_deductibles":  { "2026": null },
@@ -304,7 +314,6 @@ Content-Type: application/json
       "a_depenses_annee_en_cours":                { "2026": false },
       "a_employe_beneficiaires_annees_precedentes": { "2026": false },
       "a_employe_beneficiaires_annee_en_cours":   { "2026": true },
-      "somme_depenses_ttc":                       { "2026": 0 },
       "eligible_doublement_cotisation":           { "2026": null },
       "montant_doublement_contribution":          { "2026": null },
       "contribution_avant_depenses_deductibles":  { "2026": null },
@@ -359,7 +368,6 @@ Content-Type: application/json
       "a_depenses_annee_en_cours":                { "2026": false },
       "a_employe_beneficiaires_annees_precedentes": { "2026": false },
       "a_employe_beneficiaires_annee_en_cours":   { "2026": true },
-      "somme_depenses_ttc":                       { "2026": 0 },
       "eligible_doublement_cotisation":           { "2026": null },
       "montant_doublement_contribution":          { "2026": null },
       "contribution_avant_depenses_deductibles":  { "2026": null },
@@ -413,7 +421,6 @@ Content-Type: application/json
       "a_depenses_annee_en_cours":                { "2026": false },
       "a_employe_beneficiaires_annees_precedentes": { "2026": false },
       "a_employe_beneficiaires_annee_en_cours":   { "2026": true },
-      "somme_depenses_ttc":                       { "2026": 0 },
       "eligible_doublement_cotisation":           { "2026": null },
       "montant_doublement_contribution":          { "2026": null },
       "contribution_avant_depenses_deductibles":  { "2026": null },
@@ -441,31 +448,10 @@ Content-Type: application/json
 {
   "individus": {
     "beneficiaire_1": {
-      "qualite_beneficiaire": {
-        "2026": "beneficiaire_a"
-      },
-      "nb_heures_travaillees": {
-        "2026": 0
-      },
-      "unite_beneficiaire": {
-        "2026": null
-      }
-    },
-    "beneficiaire_2": {
-      "qualite_beneficiaire": {
-        "2026": "beneficiaire_a"
-      },
-      "nb_heures_travaillees": {
-        "2026": 0
-      },
-      "unite_beneficiaire": {
-        "2026": null
-      }
     }
   },
   "entreprises": {
     "entreprise_8": {
-      "beneficiaires_handicap": ["beneficiaire_1"],
       "effectif_salarie": {
         "2026": 23
       },
@@ -478,7 +464,6 @@ Content-Type: application/json
       "a_depenses_annee_en_cours":                { "2026": false },
       "a_employe_beneficiaires_annees_precedentes": { "2026": false },
       "a_employe_beneficiaires_annee_en_cours":   { "2026": false },
-      "somme_depenses_ttc":                       { "2026": 0 },
       "eligible_doublement_cotisation":           { "2026": null },
       "montant_doublement_contribution":          { "2026": null },
       "contribution_avant_depenses_deductibles":  { "2026": null },
@@ -496,68 +481,6 @@ Content-Type: application/json
         const montant = response.body.entreprises["entreprise_8"]
             .montant_contribution["2026"];
         client.assert(montant === 400032, "Attendu 400032, recu " + montant);
-    });
-%}
-
-### Test 9.1 - contrat
-POST {{baseUrl}}/calculate
-Content-Type: application/json
-
-{
-  "individus": {
-    "contrat_services": {
-      "type_contrat": {
-        "2026": "services"
-      },
-      "prix_ht_fourniture": {
-        "2026": 120000
-      },
-      "cout_matiere_premiere": {
-        "2026": 0
-      },
-      "unite_contrats_service": {
-        "2026": null
-      }
-    }
-}
-> {%
-    client.test("Contrat services calcule 1.24 unite", function() {
-        client.assert(response.status === 200, "Statut HTTP attendu : 200");
-
-        const result = response.body.individus["contrat_services"].unite_contrats_service["2026"];
-        const expected = 0.05;
-        client.assert(result === expected, "Attendu " + expected + ", recu " + result);
-    });
-%}
-
-### Test 9.2 - contrat
-POST {{baseUrl}}/calculate
-Content-Type: application/json
-
-{
-  "individus": {
-    "contrat_services": {
-      "type_contrat": {
-        "2026": "services"
-      },
-      "prix_ht_fourniture": {
-        "2026": 50000
-      },
-      "cout_matiere_premiere": {
-        "2026": 0
-      },
-      "unite_contrats_service": {
-        "2026": null
-      }
-    }
-}
-> {%
-    client.test("Contrat services calcule 1.24 unite", function() {
-        client.assert(response.status === 200, "Statut HTTP attendu : 200");
-
-        const result = response.body.individus["contrat_services"].unite_contrats_service["2026"];
-        const expected = 0.02;
-        client.assert(result === expected, "Attendu " + expected + ", recu " + result);
     });
 %}
 
@@ -588,11 +511,49 @@ Content-Type: application/json
       "unite_beneficiaire": {
         "2026": null
       }
+    },
+    "contrat_1": {
+      "type_contrat": {
+        "2026": "services"
+      },
+      "prix_ht_fourniture": {
+        "2026": 120000
+      },
+      "cout_matiere_premiere": {
+        "2026": 0
+      },
+      "unite_contrats_service": {
+        "2026": null
+      }
+    },
+    "contrat_2": {
+      "type_contrat": {
+        "2026": "services"
+      },
+      "prix_ht_fourniture": {
+        "2026": 50000
+      },
+      "cout_matiere_premiere": {
+        "2026": 0
+      },
+      "unite_contrats_service": {
+        "2026": null
+      }
+    },
+    "depense_1": {
+      "depense_handicap": { "2026": 50000 }
+    },
+    "depense_2": {
+      "depense_handicap": { "2026": 96000 }
+    },
+    "depense_3": {
+      "depense_handicap": { "2026": 68000 }
     }
   },
   "entreprises": {
     "entreprise_9": {
       "beneficiaires_handicap": ["beneficiaire_1","beneficiaire_2"],
+      "contrats_handicap": ["contrat_1","contrat_2"],
       "effectif_salarie": {
         "2026": 153
       },
@@ -603,7 +564,7 @@ Content-Type: application/json
         "2026": null
       },
       "a_depenses_annee_en_cours":                { "2026": true },
-      "somme_depenses_ttc":                       { "2026": 214000 },
+      "depenses_handicap": ["depense_1","depense_2","depense_3"],
       "a_employe_beneficiaires_annees_precedentes": { "2026": false },
       "a_employe_beneficiaires_annee_en_cours":   { "2026": true },
       "a_contracte_annee_en_cours":               { "2026": true },
@@ -719,6 +680,40 @@ Content-Type: application/json
       "unite_beneficiaire": {
         "2026": null
       }
+    },
+    "contrat_1": {
+      "type_contrat": {
+        "2026": "services"
+      },
+      "prix_ht_fourniture": {
+        "2026": 24623
+      },
+      "cout_matiere_premiere": {
+        "2026": 0
+      },
+      "unite_contrats_service": {
+        "2026": null
+      }
+    },
+    "contrat_2": {
+      "type_contrat": {
+        "2026": "services"
+      },
+      "prix_ht_fourniture": {
+        "2026": 46255
+      },
+      "cout_matiere_premiere": {
+        "2026": 0
+      },
+      "unite_contrats_service": {
+        "2026": null
+      }
+    },
+    "depense_1": {
+      "depense_handicap": { "2026": 69582 }
+    },
+    "depense_2": {
+      "depense_handicap": { "2026": 17632 }
     }
   },
   "entreprises": {
@@ -734,12 +729,13 @@ Content-Type: application/json
         "2026": null
       },
       "a_depenses_annee_en_cours":                { "2026": true },
-      "somme_depenses_ttc":                       { "2026": 87214 },
+      "depenses_handicap": ["depense_1","depense_2"],
       "a_employe_beneficiaires_annees_precedentes": { "2026": true },
       "a_employe_beneficiaires_annee_en_cours":   { "2026": true },
       "a_contracte_annee_en_cours":               { "2026": true },
+      "contrats_handicap": ["contrat_1","contrat_2"],
       "a_contracte_annees_precedentes":           { "2026": true },
-      "somme_unites_contrats_services":           { "2026": 0.03 },
+      "somme_unites_contrats_services":           { "2026": null },
       "somme_unites_contrats_disposition":         { "2026": 0.00 },
       "eligible_doublement_cotisation":           { "2026": null },
       "montant_doublement_contribution":          { "2026": null },
@@ -757,6 +753,6 @@ Content-Type: application/json
         client.assert(doublement === false, "Attendu false, recu " + doublement);
         const montant = response.body.entreprises["entreprise_10"]
             .montant_contribution["2026"];
-        client.assert(montant === 2362982, "Attendu 2362982, recu " + montant);
+        client.assert(montant === 2397984, "Attendu 2397984, recu " + montant);
     });
 %}

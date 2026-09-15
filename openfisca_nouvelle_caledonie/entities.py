@@ -119,6 +119,12 @@ Entreprise = build_entity(
             "label": "Contrats Handicap",
             "doc": "Contrats de sous-traitance ou de mise à disposition de personnel pris en compte pour la CIH.",
         },
+        {
+            "key": "depense_handicap",
+            "plural": "depenses_handicap",
+            "label": "Dépenses déductibles",
+            "doc": "Dépenses déductibles engagées pour l'emploi ou l'insertion de travailleurs handicapés.",
+        },
     ],
 )
 

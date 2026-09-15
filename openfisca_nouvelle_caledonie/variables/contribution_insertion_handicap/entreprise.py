@@ -64,11 +64,10 @@ class somme_unites_beneficiaires(Variable):
     label = "Somme des unités de bénéficiaires, arrondie à 2 décimales par défaut"
 
     def formula(entreprise, period):
-        unites_individuelles = entreprise.members('unite_beneficiaire', period)
-        total = entreprise.sum(unites_individuelles)
-
-        # équivalent de .setScale(2, RoundingMode.DOWN) en Java
-        return np.floor(total * 100) / 100
+        unites_individuelles = entreprise.members("unite_beneficiaire", period)
+        # Somme en centièmes pour éviter les pertes liées aux flottants binaires.
+        total_centiemes = entreprise.sum(np.rint(np.floor(unites_individuelles * 100)))
+        return total_centiemes / 100
 
 class somme_unites_contrats_services(Variable):
     value_type = float
@@ -78,8 +77,11 @@ class somme_unites_contrats_services(Variable):
 
     def formula(entreprise, period):
         unites_services = entreprise.members("unite_contrats_service", period)
-        total = entreprise.sum(unites_services)
-        return np.floor(total * 100) / 100
+        # Les unités sont déjà tronquées à 2 décimales au niveau individuel.
+        # On somme en centièmes pour reproduire la logique BigDecimal (évite
+        # les effets de précision float qui peuvent transformer 0.01 + 0.02 en 0.02 après floor).
+        total_centiemes = entreprise.sum(np.rint(unites_services * 100))
+        return total_centiemes / 100
 
 class somme_unites_contrats_disposition(Variable):
     value_type = float
@@ -89,8 +91,8 @@ class somme_unites_contrats_disposition(Variable):
 
     def formula(entreprise, period):
         unites_disposition = entreprise.members("unite_contrat_disposition", period)
-        total = entreprise.sum(unites_disposition)
-        return np.floor(total * 100) / 100
+        total_centiemes = entreprise.sum(np.rint(unites_disposition * 100))
+        return total_centiemes / 100
 
 
 class total_general_unites_contrats(Variable):
@@ -310,11 +312,12 @@ class somme_depenses_ttc(Variable):
     value_type = float
     entity = Entreprise
     definition_period = YEAR
-    label = (
-        "Somme des montants TTC des dépenses déductibles déclarées "
-        "(agrégation déléguée à l'appelant — cf. getMontantTTC() par dépense)"
-    )
-    # INPUT — la somme des dépenses individuelles est réalisée côté appelant.
+    label = "Somme des montants TTC des dépenses déductibles déclarées"
+
+    def formula(entreprise, period):
+        depenses_individuelles = entreprise.members("depense_handicap", period)
+        total = entreprise.sum(depenses_individuelles)
+        return np.floor(total * 100) / 100
 
 
 class montant_depenses_deductibles(Variable):

@@ -52,3 +52,11 @@ class unite_beneficiaire(Variable):
 
 # Variables liées aux contrats déplacées dans `unite_contrat.py`.
 
+# ------ Dépenses déductibles ------
+
+class depense_handicap(Variable):
+    value_type = float
+    entity = Individu
+    definition_period = YEAR
+    label = "Montant TTC d'une dépense déductible engagée pour l'emploi ou l'insertion de travailleurs handicapés"
+    # INPUT : cette variable est fournie directement par l'utilisateur ou un calcul externes
