@@ -1,0 +1,309 @@
+- name: "Test DTEFP 1: Entreprise avec depenses et emploi beneficiaires"
+  period: 2026
+  input:
+    individus:
+      beneficiaire_1:
+        qualite_beneficiaire: beneficiaire_a
+        nb_heures_travaillees: 0
+        unite_beneficiaire: null
+      beneficiaire_2:
+        qualite_beneficiaire: beneficiaire_a
+        nb_heures_travaillees: 0
+        unite_beneficiaire: null
+      beneficiaire_3:
+        qualite_beneficiaire: beneficiaire_a
+        nb_heures_travaillees: 0
+        unite_beneficiaire: null
+      depense_1:
+        depense_handicap: 3625539
+      depense_2:
+        depense_handicap: 177262
+      depense_3:
+        depense_handicap: 265869
+    entreprises:
+      entreprise_1:
+        beneficiaires_handicap:
+          - beneficiaire_1
+          - beneficiaire_2
+          - beneficiaire_3
+        effectif_salarie: 313.77
+        a_depenses_annee_en_cours: true
+        a_employe_beneficiaires_annee_en_cours: true
+        depenses_handicap:
+          - depense_1
+          - depense_2
+          - depense_3
+  output:
+    entreprises:
+      entreprise_1:
+        eligible_doublement_cotisation: false
+        montant_contribution: 0
+
+- name: "Test DTEFP 2: Entreprise avec emploi annees precedentes seulement"
+  period: 2026
+  input:
+    individus:
+      beneficiaire_1:
+        qualite_beneficiaire: beneficiaire_a
+        nb_heures_travaillees: 0
+        unite_beneficiaire: null
+      beneficiaire_2:
+        qualite_beneficiaire: beneficiaire_a
+        nb_heures_travaillees: 0
+        unite_beneficiaire: null
+    entreprises:
+      entreprise_2:
+        beneficiaires_handicap:
+          - beneficiaire_1
+          - beneficiaire_2
+        effectif_salarie: 119
+        a_depenses_annee_en_cours: false
+        a_employe_beneficiaires_annees_precedentes: true
+        a_employe_beneficiaires_annee_en_cours: false
+  output:
+    entreprises:
+      entreprise_2:
+        eligible_doublement_cotisation: false
+        montant_contribution: 0
+
+- name: "Test DTEFP 3: Entreprise avec depenses et emploi precedent"
+  period: 2026
+  input:
+    individus:
+      beneficiaire_1:
+        qualite_beneficiaire: beneficiaire_a
+        nb_heures_travaillees: 0
+        unite_beneficiaire: null
+      depense_1:
+        depense_handicap: 47170
+    entreprises:
+      entreprise_3:
+        beneficiaires_handicap:
+          - beneficiaire_1
+        effectif_salarie: 257.13
+        a_depenses_annee_en_cours: true
+        a_employe_beneficiaires_annees_precedentes: true
+        a_employe_beneficiaires_annee_en_cours: false
+        depenses_handicap:
+          - depense_1
+  output:
+    entreprises:
+      entreprise_3:
+        eligible_doublement_cotisation: false
+        montant_contribution: 2453030
+
+- name: "Test DTEFP 4: Entreprise avec beneficiaires B et emploi courant"
+  period: 2026
+  input:
+    individus:
+      beneficiaire_1:
+        qualite_beneficiaire: beneficiaire_b
+        nb_heures_travaillees: 588
+        unite_beneficiaire: null
+      beneficiaire_2:
+        qualite_beneficiaire: beneficiaire_b
+        nb_heures_travaillees: 853
+        unite_beneficiaire: null
+    entreprises:
+      entreprise_4:
+        beneficiaires_handicap:
+          - beneficiaire_1
+          - beneficiaire_2
+        effectif_salarie: 26
+        a_depenses_annee_en_cours: false
+        a_employe_beneficiaires_annees_precedentes: false
+        a_employe_beneficiaires_annee_en_cours: true
+  output:
+    entreprises:
+      entreprise_4:
+        eligible_doublement_cotisation: false
+        montant_contribution: 0
+
+- name: "Test DTEFP 5: Entreprise 71 salaries avec beneficiaires B"
+  period: 2026
+  input:
+    individus:
+      beneficiaire_1:
+        qualite_beneficiaire: beneficiaire_b
+        nb_heures_travaillees: 588
+        unite_beneficiaire: null
+      beneficiaire_2:
+        qualite_beneficiaire: beneficiaire_b
+        nb_heures_travaillees: 853
+        unite_beneficiaire: null
+    entreprises:
+      entreprise_5:
+        beneficiaires_handicap:
+          - beneficiaire_1
+          - beneficiaire_2
+        effectif_salarie: 71
+        a_depenses_annee_en_cours: false
+        a_employe_beneficiaires_annees_precedentes: false
+        a_employe_beneficiaires_annee_en_cours: true
+  output:
+    entreprises:
+      entreprise_5:
+        eligible_doublement_cotisation: false
+        montant_contribution: 116009
+
+- name: "Test DTEFP 6: Entreprise 38 salaries avec beneficiaire A"
+  period: 2026
+  input:
+    individus:
+      beneficiaire_1:
+        qualite_beneficiaire: beneficiaire_a
+        nb_heures_travaillees: 0
+        unite_beneficiaire: null
+    entreprises:
+      entreprise_6:
+        beneficiaires_handicap:
+          - beneficiaire_1
+        effectif_salarie: 38
+        a_depenses_annee_en_cours: false
+        a_employe_beneficiaires_annees_precedentes: false
+        a_employe_beneficiaires_annee_en_cours: true
+  output:
+    entreprises:
+      entreprise_6:
+        eligible_doublement_cotisation: false
+        montant_contribution: 0
+
+- name: "Test DTEFP 7: Entreprise 89 salaries avec beneficiaire A"
+  period: 2026
+  input:
+    individus:
+      beneficiaire_1:
+        qualite_beneficiaire: beneficiaire_a
+        nb_heures_travaillees: 0
+        unite_beneficiaire: null
+    entreprises:
+      entreprise_7:
+        beneficiaires_handicap:
+          - beneficiaire_1
+        effectif_salarie: 89
+        a_depenses_annee_en_cours: false
+        a_employe_beneficiaires_annees_precedentes: false
+        a_employe_beneficiaires_annee_en_cours: true
+  output:
+    entreprises:
+      entreprise_7:
+        eligible_doublement_cotisation: false
+        montant_contribution: 400032
+
+- name: "Test DTEFP 8: Entreprise 23 salaries sans beneficiaires"
+  period: 2026
+  input:
+    individus:
+      beneficiaire_1: {}
+    entreprises:
+      entreprise_8:
+        effectif_salarie: 23
+        a_depenses_annee_en_cours: false
+        a_employe_beneficiaires_annees_precedentes: false
+        a_employe_beneficiaires_annee_en_cours: false
+  output:
+    entreprises:
+      entreprise_8:
+        eligible_doublement_cotisation: true
+        montant_contribution: 400032
+
+- name: "Test DTEFP 9: Entreprise avec contrats services et depenses"
+  period: 2026
+  input:
+    individus:
+      beneficiaire_1:
+        qualite_beneficiaire: beneficiaire_a
+        nb_heures_travaillees: 0
+        unite_beneficiaire: null
+      beneficiaire_2:
+        qualite_beneficiaire: beneficiaire_a
+        nb_heures_travaillees: 0
+        unite_beneficiaire: null
+      contrat_1:
+        type_contrat: services
+        prix_ht_fourniture: 120000
+        cout_matiere_premiere: 0
+        unite_contrats_service: null
+      contrat_2:
+        type_contrat: services
+        prix_ht_fourniture: 50000
+        cout_matiere_premiere: 0
+        unite_contrats_service: null
+      depense_1:
+        depense_handicap: 50000
+      depense_2:
+        depense_handicap: 96000
+      depense_3:
+        depense_handicap: 68000
+    entreprises:
+      entreprise_9:
+        beneficiaires_handicap:
+          - beneficiaire_1
+          - beneficiaire_2
+        contrats_handicap:
+          - contrat_1
+          - contrat_2
+        effectif_salarie: 153
+        a_depenses_annee_en_cours: true
+        depenses_handicap:
+          - depense_1
+          - depense_2
+          - depense_3
+        a_employe_beneficiaires_annees_precedentes: false
+        a_employe_beneficiaires_annee_en_cours: true
+        a_contracte_annee_en_cours: true
+  output:
+    entreprises:
+      entreprise_9:
+        eligible_doublement_cotisation: false
+        montant_contribution: 251037
+
+- name: "Test DTEFP 10: Entreprise 293 salaries avec contrats et depenses"
+  period: 2026
+  input:
+    individus:
+      beneficiaire_1:
+        qualite_beneficiaire: beneficiaire_a
+        nb_heures_travaillees: 0
+        unite_beneficiaire: null
+      beneficiaire_2:
+        qualite_beneficiaire: beneficiaire_a
+        nb_heures_travaillees: 0
+        unite_beneficiaire: null
+      contrat_1:
+        type_contrat: services
+        prix_ht_fourniture: 24623
+        cout_matiere_premiere: 0
+        unite_contrats_service: null
+      contrat_2:
+        type_contrat: services
+        prix_ht_fourniture: 46255
+        cout_matiere_premiere: 0
+        unite_contrats_service: null
+      depense_1:
+        depense_handicap: 69582
+      depense_2:
+        depense_handicap: 17632
+    entreprises:
+      entreprise_10:
+        beneficiaires_handicap:
+          - beneficiaire_1
+          - beneficiaire_2
+        effectif_salarie: 293
+        a_depenses_annee_en_cours: true
+        depenses_handicap:
+          - depense_1
+          - depense_2
+        a_employe_beneficiaires_annees_precedentes: true
+        a_employe_beneficiaires_annee_en_cours: true
+        a_contracte_annee_en_cours: true
+        contrats_handicap:
+          - contrat_1
+          - contrat_2
+        a_contracte_annees_precedentes: true
+  output:
+    entreprises:
+      entreprise_10:
+        eligible_doublement_cotisation: false
+        montant_contribution: 2397984
+
