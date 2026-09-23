@@ -244,9 +244,10 @@ class contribution_avant_depenses_deductibles(Variable):
         )
 
         # --- Taux horaire (SMG ou SMAG) ---
-        params = parameters(period).contribution_insertion_handicap.obligation_emploi
         est_smag = entreprise("regime_smag", period)
-        taux = where(est_smag, params.taux_horaire_smag, params.taux_horaire_smg)
+        taux_smag = parameters(period).salaires_minimums.salaire_minimum_agricole_garanti
+        taux_smg = parameters(period).salaires_minimums.salaire_minimum_garanti
+        taux = where(est_smag, taux_smag, taux_smg)
 
         # --- Montant brut, tronqué à 2 décimales (RoundingMode.DOWN) ---
         manquants = entreprise("beneficiaires_manquants", period)

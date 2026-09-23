@@ -1,0 +1,42 @@
+description: Salaire Minimum Agricole Garanti (SMAG) - Taux horaire brut
+values:
+  2026-08-01:
+    value: 850.07
+  2025-06-01:
+    value: 842.97
+  2024-08-01:
+    value: 837.61
+  2023-03-01:
+    value: 830.06
+  2023-02-01:
+    value: 825.68
+  2022-10-01:
+    value: 820.35
+  2022-07-01:
+    value: 812.31
+  2022-06-01:
+    value: 804.03
+  2022-05-01:
+    value: 796.86
+  2018-10-01:
+    value: 787.49
+metadata:
+  unit: currency-XPF
+  description: Taux du salaire horaire minimum agricole garanti en F.CFP brut
+documentation: |
+  Le Salaire Minimum Agricole Garanti (SMAG) est fixé par arrêtés du Gouvernement de la Nouvelle-Calédonie.
+  
+  Références :
+  - 2026-08-01: Arrêté n AG-2026-DTEFP-0647 du 29-07-2026 (JONC n 11112 du 31-07-2026 - page 17333)
+  - 2025-06-01: Arrêté n 2025-835/GNC du 21-05-2025 (JONC n 10924 du 27-05-2025 - page 8362)
+  - 2024-08-01: Arrêté n 2024-1391/GNC du 17-07-2024 (JONC n 10778 du 25-07-2024 - page 14409)
+  - 2023-03-01: Arrêté n 2023-297/GNC du 15-02-2023 (JONC n 10530 du 23-02-2023 - page 3832)
+  - 2023-02-01: Arrêté n 2023-33/GNC du 18-01-2023 (JONC n 10513 du 26-01-2023 - page 743)
+  - 2022-10-01: Arrêté n 2022-2203/GNC du 21-09-2022 (JONC n 10449 du 30-09-2022 - page 17950; erratum JONC n 10456 du 18-10-2022 - page 18917)
+  - 2022-07-01: Arrêté n 2022-1511/GNC du 22-06-2022 (JONC n 10405 du 28-06-2022 - page 12425)
+  - 2022-06-01: Arrêté n 2022-1269/GNC du 18-05-2022 (JONC n 10389 du 26-05-2022 - page 11089)
+  - 2022-05-01: Arrêté n 2022-1065/GNC du 27-04-2022 (JONC n 10373 du 28-04-2022 - page 8820)
+  - 2018-10-01: Arrêté n 2018-2339/GNC du 25-09-2018 (JONC n 9615 du 27-09-2018 - page 14006)
+  
+  Source: https://dtenc.gouv.nc/vos-droits-vos-obligations/remuneration/le-salaire-minimum-garanti
+

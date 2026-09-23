@@ -1,0 +1,7 @@
+description: Marché du travail
+metadata:
+  short_label: Marché du travail
+  label_en: Labour market
+  order:
+  - remuneration_fonction_publique
+

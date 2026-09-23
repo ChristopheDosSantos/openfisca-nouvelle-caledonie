@@ -67,9 +67,10 @@ class unite_contrats_service(Variable):
         cout_matiere = individu("cout_matiere_premiere", period)
 
         p = parameters(period).contribution_insertion_handicap.obligation_emploi
+        taux_smg = parameters(period).salaires_minimums.salaire_minimum_garanti
         base = prix - cout_matiere
         unites = np.floor(
-            base / (p.diviseur_unite_contrat_services * p.taux_horaire_smg) * 100,
+            base / (p.diviseur_unite_contrat_services * taux_smg) * 100,
         ) / 100
 
         return np.where(type_ctr == types.services, unites, 0.0)
@@ -99,9 +100,10 @@ class unite_contrat_disposition(Variable):
         cout_matiere = individu("cout_matiere_premiere", period)
 
         p = parameters(period).contribution_insertion_handicap.obligation_emploi
+        taux_smg = parameters(period).salaires_minimums.salaire_minimum_garanti
         base = prix - cout_matiere
         unites = np.floor(
-            base / (p.diviseur_unite_contrat_disposition * p.taux_horaire_smg) * 100,
+            base / (p.diviseur_unite_contrat_disposition * taux_smg) * 100,
         ) / 100
 
         return np.where(type_ctr == types.disposition, unites, 0.0)

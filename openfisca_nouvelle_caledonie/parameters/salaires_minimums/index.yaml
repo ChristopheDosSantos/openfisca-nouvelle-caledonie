@@ -1,0 +1,12 @@
+description: Salaires minimums
+metadata:
+  short_label: Salaires minimums
+  label_en: Minimum wages
+  order:
+  - salaire_minimum_garanti
+  - salaire_minimum_garanti_mensuel
+  - salaire_minimum_agricole_garanti
+  - salaire_minimum_agricole_garanti_mensuel
+
+
+

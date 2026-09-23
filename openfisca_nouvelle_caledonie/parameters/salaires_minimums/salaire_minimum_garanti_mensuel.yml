@@ -1,0 +1,32 @@
+description: Salaire Minimum Garanti (SMG) - Rémunération mensuelle (169 heures)
+values:
+  2026-08-01:
+    value: 169014
+  2025-06-01:
+    value: 167602
+  2024-08-01:
+    value: 166536
+  2023-03-01:
+    value: 165032
+  2023-02-01:
+    value: 164162
+  2022-10-01:
+    value: 163102
+  2022-07-01:
+    value: 161503
+  2022-06-01:
+    value: 159857
+  2022-05-01:
+    value: 158431
+  2018-10-01:
+    value: 156568
+metadata:
+  unit: currency-XPF
+  description: Rémunération mensuelle (169 heures) du salaire minimum garanti en F.CFP brut
+documentation: |
+  Le Salaire Minimum Garanti (SMG) mensuel est calculé sur la base de 169 heures de travail.
+  
+  Pour plus de détails, voir le fichier salaire_minimum_garanti.yml
+  
+  Source: https://dtenc.gouv.nc/vos-droits-vos-obligations/remuneration/le-salaire-minimum-garanti
+

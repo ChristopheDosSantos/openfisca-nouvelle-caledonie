@@ -1,0 +1,42 @@
+description: Salaire Minimum Garanti (SMG) - Taux horaire brut
+values:
+  2026-08-01:
+    value: 1000.08
+  2025-06-01:
+    value: 991.73
+  2024-08-01:
+    value: 985.42
+  2023-03-01:
+    value: 976.52
+  2023-02-01:
+    value: 971.37
+  2022-10-01:
+    value: 965.10
+  2022-07-01:
+    value: 955.64
+  2022-06-01:
+    value: 945.90
+  2022-05-01:
+    value: 937.46
+  2018-10-01:
+    value: 926.44
+metadata:
+  unit: currency-XPF
+  description: Taux du salaire horaire minimum garanti en F.CFP brut
+documentation: |
+  Le Salaire Minimum Garanti (SMG) est fixé par arrêtés du Gouvernement de la Nouvelle-Calédonie.
+  
+  Références :
+  - 2026-08-01: Arrêté n AG-2026-DTEFP-0648 du 29-07-2026 (JONC n 11112 du 31-07-2026 - page 17334)
+  - 2025-06-01: Arrêté n 2025-837/GNC du 21-05-2025 (JONC n 10924 du 27-05-2025 - page 8362)
+  - 2024-08-01: Arrêté n 2024-1389/GNC du 17-07-2024 (JONC n 10778 du 25-07-2024 - page 14408)
+  - 2023-03-01: Arrêté n 2023-295/GNC du 15-02-2023 (JONC n 10530 du 23-02-2023 - page 3831)
+  - 2023-02-01: Arrêté n 2023-31/GNC du 18-01-2023 (JONC n 10513 du 26-01-2023 - page 743)
+  - 2022-10-01: Arrêté n 2022-2201/GNC du 21-09-2022 (JONC n 10449 du 30-09-2022 - page 17950)
+  - 2022-07-01: Arrêté n 2022-1513/GNC du 22-06-2022 (JONC n 10405 du 28-06-2022 - page 12426)
+  - 2022-06-01: Arrêté n 2022-1267/GNC du 18-05-2022 (JONC n 10389 du 26-05-2022 - page 11088)
+  - 2022-05-01: Arrêté n 2022-1063/GNC du 27-04-2022 (JONC n 10373 du 28-04-2022 - page 8819)
+  - 2018-10-01: Arrêté n 2018-2337/GNC du 25-09-2018 (JONC n 9615 du 27-09-2018 - page 14005)
+  
+  Source: https://dtenc.gouv.nc/vos-droits-vos-obligations/remuneration/le-salaire-minimum-garanti
+
