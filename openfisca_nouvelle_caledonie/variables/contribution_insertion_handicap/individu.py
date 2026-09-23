@@ -20,6 +20,12 @@ class qualite_beneficiaire(Variable):
     entity = Individu
     definition_period = YEAR
     label = "Choix A ou B du formulaire de déclaration pour ce bénéficiaire"
+    reference = "https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/7388DD772A16E5544B25755E007A9AF0/$File/Loi-du-pays_2009-1_du_07-01-2009.pdf#Art.%20Lp.%20473-8"
+    documentation = """
+    Détermine le mode de calcul de l'unité comptabilisée au titre de l'obligation d'emploi :
+    - Choix A : CDI/CDD/intérim d'au moins 6 mois et au moins mi-temps → 1 unité
+    - Choix B : intérim de moins de 6 mois ou autres → au prorata des heures travaillées
+    """
 
 
 class nb_heures_travaillees(Variable):
@@ -27,12 +33,24 @@ class nb_heures_travaillees(Variable):
     entity = Individu
     definition_period = YEAR
     label = "Nombre d'heures travaillées (saisi uniquement si choix B)"
+    reference = "https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/7388DD772A16E5544B25755E007A9AF0/$File/Loi-du-pays_2009-1_du_07-01-2009.pdf#Art.%20Lp.%20473-8"
+    documentation = """
+    Nombre d'heures travaillées par le bénéficiaire au cours de l'année.
+    Utilisé uniquement pour le choix B (travail temporaire), pour le calcul au prorata
+    du nombre d'unités comptabilisé au titre de l'obligation d'emploi.
+    """
 
 class unite_beneficiaire(Variable):
     value_type = float
     entity = Individu
     definition_period = YEAR
     label = "Unité comptabilisée au titre de l'obligation d'emploi, avant arrondi global"
+    reference = "https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/7388DD772A16E5544B25755E007A9AF0/$File/Loi-du-pays_2009-1_du_07-01-2009.pdf#Art.%20Lp.%20473-8"
+    documentation = """
+    Calcule l'unité comptabilisée pour chaque bénéficiaire selon le choix retenu :
+    - Choix A (CDI/CDD/intérim ≥ 6 mois et ≥ mi-temps) : 1 unité
+    - Choix B (autre) : nombre d'heures travaillées / nombre d'heures de référence annuel
+    """
 
     def formula(individu, period, parameters):
         qualite = individu('qualite_beneficiaire', period)

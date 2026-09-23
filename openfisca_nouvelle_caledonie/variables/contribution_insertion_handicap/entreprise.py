@@ -18,7 +18,11 @@ class soumis_obligation_emploi_handicapes(Variable):
     entity = Entreprise
     definition_period = YEAR
     label = "L'entreprise est soumise à l'obligation d'emploi de travailleurs handicapés"
-    reference = "https://code.travail.gouv.fr/code-du-travail/L5212-1"
+    reference = "https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/7388DD772A16E5544B25755E007A9AF0/$File/Loi-du-pays_2009-1_du_07-01-2009.pdf#Art.%20Lp.%20473-1"
+    documentation = """
+    Détermine si l'entreprise est soumise à l'obligation d'emploi de travailleurs handicapés.
+    L'obligation s'applique à tout employeur occupant plus de 20 salariés.
+    """
 
     def formula(entreprise, period, parameters):
         effectif = entreprise("effectif_salarie", period)
@@ -34,6 +38,15 @@ class nb_beneficiaires_devant_etre_employes(Variable):
     entity = Entreprise
     definition_period = YEAR
     label = "Nombre de bénéficiaires que l'entreprise doit employer"
+    reference = [
+        "https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/7388DD772A16E5544B25755E007A9AF0/$File/Loi-du-pays_2009-1_du_07-01-2009.pdf#Art.%20Lp.%20473-3",
+        "https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/7388DD772A16E5544B25755E007A9AF0/$File/Loi-du-pays_2009-1_du_07-01-2009.pdf#Art.%20Lp.%20473-8",
+    ]
+    documentation = """
+    Calcule le nombre théorique de bénéficiaires que l'entreprise doit employer,
+    basé sur le pourcentage défini de l'effectif total, avec application d'un minimum
+    pour les calculs entre 0,5 et 1.
+    """
 
     def formula(entreprise, period, parameters):
         effectif = entreprise("effectif_salarie", period)
@@ -62,6 +75,12 @@ class somme_unites_beneficiaires(Variable):
     entity = Entreprise
     definition_period = YEAR
     label = "Somme des unités de bénéficiaires, arrondie à 2 décimales par défaut"
+    reference = "https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/7388DD772A16E5544B25755E007A9AF0/$File/Loi-du-pays_2009-1_du_07-01-2009.pdf#Art.%20Lp.%20473-8"
+    documentation = """
+    Agrège les unités individuelles de bénéficiaires au niveau de l'entreprise,
+    selon le mode de calcul défini à l'article Lp. 473-8 (1 unité pour présence ≥ 6 mois et ≥ mi-temps,
+    ou au prorata des heures pour les travailleurs temporaires).
+    """
 
     def formula(entreprise, period):
         unites_individuelles = entreprise.members("unite_beneficiaire", period)
@@ -75,6 +94,11 @@ class somme_unites_contrats_services(Variable):
     entity = Entreprise
     definition_period = YEAR
     label = "Somme des unités des contrats SERVICES"
+    reference = "https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/7388DD772A16E5544B25755E007A9AF0/$File/Loi-du-pays_2009-1_du_07-01-2009.pdf#Art.%20Lp.%20473-9"
+    documentation = """
+    Agrège les unités générées par les contrats de prestations de services passés
+    avec des structures d'emploi adapté, conformément aux dispositions de l'article Lp. 473-9.
+    """
 
     def formula(entreprise, period):
         unites_services = entreprise.members("unite_contrats_service", period)
@@ -89,6 +113,11 @@ class somme_unites_contrats_disposition(Variable):
     entity = Entreprise
     definition_period = YEAR
     label = "Somme des unités des contrats DISPOSITION"
+    reference = "https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/7388DD772A16E5544B25755E007A9AF0/$File/Loi-du-pays_2009-1_du_07-01-2009.pdf#Art.%20Lp.%20473-9"
+    documentation = """
+    Agrège les unités générées par les contrats de mise à disposition (fournitures de sous-traitance)
+    passés avec des structures d'emploi adapté, conformément aux dispositions de l'article Lp. 473-9.
+    """
 
     def formula(entreprise, period):
         unites_disposition = entreprise.members("unite_contrat_disposition", period)
@@ -101,6 +130,11 @@ class total_general_unites_contrats(Variable):
     entity = Entreprise
     definition_period = YEAR
     label = "Total des unités contrats, plafonné à la moitié des bénéficiaires dus"
+    reference = "https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/7388DD772A16E5544B25755E007A9AF0/$File/Loi-du-pays_2009-1_du_07-01-2009.pdf#Art.%20Lp.%20473-9"
+    documentation = """
+    Somme des unités de contrats (services et mise à disposition), plafonné à la moitié
+    du nombre de bénéficiaires que l'entreprise devait employer, selon l'article Lp. 473-9.
+    """
 
     def formula(entreprise, period):
         services = entreprise('somme_unites_contrats_services', period)
@@ -118,6 +152,15 @@ class beneficiaires_manquants(Variable):
     entity = Entreprise
     definition_period = YEAR
     label = "Beneficiaires manquants apres prise en compte des unites"
+    reference = [
+        "https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/7388DD772A16E5544B25755E007A9AF0/$File/Loi-du-pays_2009-1_du_07-01-2009.pdf#Art.%20Lp.%20473-10",
+        "https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/7388DD772A16E5544B25755E007A9AF0/$File/Loi-du-pays_2009-1_du_07-01-2009.pdf#Art.%20Lp.%20473-11",
+    ]
+    documentation = """
+    Calcule le nombre de bénéficiaires non satisfaits après déduction des unités
+    provenant des emplois directs et des contrats de services ou mise à disposition.
+    Cette valeur constitue la base de calcul de la contribution annuelle.
+    """
 
     def formula(entreprise, period):
         unites_beneficiaires = entreprise('somme_unites_beneficiaires', period)
@@ -139,6 +182,15 @@ class exonere_contribution_insertion_handicap(Variable):
         "L'entreprise est exonérée de la contribution (création d'entreprise ou "
         "effectif inférieur ou égal au seuil)"
     )
+    reference = [
+        "https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/7388DD772A16E5544B25755E007A9AF0/$File/Loi-du-pays_2009-1_du_07-01-2009.pdf#Art.%20Lp.%20473-1",
+        "https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/7388DD772A16E5544B25755E007A9AF0/$File/Loi-du-pays_2009-1_du_07-01-2009.pdf#Art.%20Lp.%20473-4",
+    ]
+    documentation = """
+    Indique si l'entreprise bénéficie d'une exonération de contribution. Deux cas d'application :
+    1. Entreprise créée avec délai de mise en conformité (article Lp. 473-4)
+    2. Entreprise dont l'effectif est inférieur ou égal au seuil (article Lp. 473-1)
+    """
     # Variable d'INPUT : pas de formula — fournie directement par l'appelant.
     # Couvre les deux cas de la logique métier Java :
     #   - isReponseCreation() : entreprise nouvellement créée
@@ -164,6 +216,16 @@ class contribution_avant_depenses_deductibles(Variable):
         "Étape H — Contribution avant dépenses déductibles "
         "(bénéficiaires manquants × multiplicateur × taux horaire)"
     )
+    reference = [
+        "https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/7388DD772A16E5544B25755E007A9AF0/$File/Loi-du-pays_2009-1_du_07-01-2009.pdf#Art.%20Lp.%20473-10",
+        "https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/7388DD772A16E5544B25755E007A9AF0/$File/Loi-du-pays_2009-1_du_07-01-2009.pdf#Art.%20Lp.%20473-11",
+    ]
+    documentation = """
+    Calcule la contribution annuelle de base au fonds pour l'insertion professionnelle,
+    selon la formule : bénéficiaires manquants × multiplicateur × taux horaire (SMG ou SMAG).
+    Cette contribution est versée pour chaque bénéficiaire de l'obligation que l'entreprise
+    n'a pas employé.
+    """
 
     def formula(entreprise, period, parameters):
         # --- Exonération (création d'entreprise ou effectif sous seuil) ---
@@ -357,6 +419,15 @@ class montant_contribution(Variable):
         "Étape K — Contribution finale "
         "(base − dépenses déductibles, tronquée à l'entier inférieur)"
     )
+    reference = [
+        "https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/7388DD772A16E5544B25755E007A9AF0/$File/Loi-du-pays_2009-1_du_07-01-2009.pdf#Art.%20Lp.%20473-10",
+        "https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/7388DD772A16E5544B25755E007A9AF0/$File/Loi-du-pays_2009-1_du_07-01-2009.pdf#Art.%20Lp.%20473-11",
+    ]
+    documentation = """
+    Contribution finalement due au fonds pour l'insertion professionnelle des personnes
+    en situation de handicap, après déduction des dépenses engagées pour l'emploi
+    ou l'insertion de ces travailleurs.
+    """
 
     def formula(entreprise, period):
         doublement = entreprise("montant_doublement_contribution", period)

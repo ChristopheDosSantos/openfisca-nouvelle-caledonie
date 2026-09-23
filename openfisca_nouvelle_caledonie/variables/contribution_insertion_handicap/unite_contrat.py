@@ -18,6 +18,15 @@ class type_contrat(Variable):
     entity = Individu
     definition_period = YEAR
     label = "Type du contrat"
+    reference = "https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/7388DD772A16E5544B25755E007A9AF0/$File/Loi-du-pays_2009-1_du_07-01-2009.pdf#Art.%20Lp.%20473-9"
+    documentation = """
+    Détermine le type de contrat passé avec une structure d'emploi adapté :
+    - SERVICES : contrat de prestations de services ou de fournitures
+    - DISPOSITION : contrat de mise à disposition (sous-traitance)
+    
+    Les deux modes permettent à l'employeur de s'acquitter partiellement de son obligation
+    d'emploi, proportionnellement au volume de travail fourni à ces structures.
+    """
 
 
 class prix_ht_fourniture(Variable):
@@ -39,6 +48,17 @@ class unite_contrats_service(Variable):
     entity = Individu
     definition_period = YEAR
     label = "Unités générées par un contrat de type SERVICES"
+    reference = "https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/7388DD772A16E5544B25755E007A9AF0/$File/Loi-du-pays_2009-1_du_07-01-2009.pdf#Art.%20Lp.%20473-9"
+    documentation = """
+    Calcule le nombre d'unités au titre de l'obligation d'emploi généré par un contrat
+    de prestations de services avec une structure d'emploi adapté.
+    
+    Formule : (Prix HT - Coût matières premières) / (diviseur × taux horaire SMG),
+    tronqué à 2 décimales.
+    
+    L'acquittement partiel est proportionnel au volume de travail fourni, conformément
+    à l'article Lp. 473-9.
+    """
 
     def formula(individu, period, parameters):
         type_ctr = individu("type_contrat", period)
@@ -60,6 +80,17 @@ class unite_contrat_disposition(Variable):
     entity = Individu
     definition_period = YEAR
     label = "Unités générées par un contrat de type DISPOSITION"
+    reference = "https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/7388DD772A16E5544B25755E007A9AF0/$File/Loi-du-pays_2009-1_du_07-01-2009.pdf#Art.%20Lp.%20473-9"
+    documentation = """
+    Calcule le nombre d'unités au titre de l'obligation d'emploi généré par un contrat
+    de mise à disposition (sous-traitance) avec une structure d'emploi adapté.
+    
+    Formule : (Prix HT - Coût matières premières) / (diviseur × taux horaire SMG),
+    tronqué à 2 décimales.
+    
+    L'acquittement partiel est proportionnel au volume de travail fourni, conformément
+    à l'article Lp. 473-9.
+    """
 
     def formula(individu, period, parameters):
         type_ctr = individu("type_contrat", period)
