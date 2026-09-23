@@ -1,0 +1,13 @@
+description: Effectif strictement supérieur à ce seuil pour déclencher l'obligation
+values:
+  2009-01-07:
+    value: 20
+metadata:
+  short_label: Seuil effectif
+  label_en: Threshold for triggering the obligation
+  unit: number
+  reference:
+    2009-01-07:
+      title: Article Lp. 473-1 du Code du Travail de Nouvelle-Calédonie
+      href: https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/7388DD772A16E5544B25755E007A9AF0/$File/Loi-du-pays_2009-1_du_07-01-2009.pdf
+

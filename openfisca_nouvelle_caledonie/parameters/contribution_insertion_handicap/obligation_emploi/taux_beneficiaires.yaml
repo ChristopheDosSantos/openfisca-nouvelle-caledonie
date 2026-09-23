@@ -1,0 +1,14 @@
+description: Taux de bénéficiaires à employer (proportion de l'effectif total)
+values:
+  2009-01-07:
+    value: 0.025
+metadata:
+  short_label: Taux de bénéficiaires
+  label_en: Percentage of disabled workers to employ
+  unit: /1
+  reference:
+    2009-01-07:
+      title: Article Lp. 473-3 du Code du Travail de Nouvelle-Calédonie
+      href: https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/7388DD772A16E5544B25755E007A9AF0/$File/Loi-du-pays_2009-1_du_07-01-2009.pdf
+
+

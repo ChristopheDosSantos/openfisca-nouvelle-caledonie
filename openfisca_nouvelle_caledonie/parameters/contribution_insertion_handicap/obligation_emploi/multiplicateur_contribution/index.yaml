@@ -1,0 +1,17 @@
+description: >
+  Barème du multiplicateur appliqué aux bénéficiaires manquants selon l'effectif de l'entreprise.
+  
+  En dessous du seuil d'effectif : multiplicateur_bas
+  Au seuil et au-dessus : multiplicateur_haut
+metadata:
+  short_label: Multiplicateur de contribution
+  label_en: Contribution multiplier scale
+  order:
+  - seuil
+  - bas
+  - haut
+  reference:
+    2026-01-01:
+      title: Article Lp. 473-10 et Lp. 473-11 du Code du Travail de Nouvelle-Calédonie (contribution annuelle)
+      href: https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/7388DD772A16E5544B25755E007A9AF0/$File/Loi-du-pays_2009-1_du_07-01-2009.pdf
+

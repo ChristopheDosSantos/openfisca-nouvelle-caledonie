@@ -1,0 +1,14 @@
+description: Diviseur utilisé pour convertir un montant de contrat de prestations de services en unités de bénéficiaires
+values:
+  2009-01-07:
+    value: 2000
+metadata:
+  short_label: Diviseur contrats de services
+  label_en: Services contract divisor
+  unit: currency
+  reference:
+    2009-01-07:
+      title: Article Lp. 473-9 du Code du Travail de Nouvelle-Calédonie (contrats de services ou sous-traitance)
+      href: https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/7388DD772A16E5544B25755E007A9AF0/$File/Loi-du-pays_2009-1_du_07-01-2009.pdf
+
+

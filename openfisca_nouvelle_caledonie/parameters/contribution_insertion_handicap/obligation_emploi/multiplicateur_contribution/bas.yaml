@@ -1,0 +1,14 @@
+description: Multiplicateur de contribution si effectif strictement inférieur au seuil
+values:
+  2026-01-01:
+    value: 400
+metadata:
+  short_label: Multiplicateur bas (effectif < seuil)
+  label_en: Low multiplier (workforce below threshold)
+  unit: /1
+  reference:
+    2026-01-01:
+      title: Article Lp. 473-10 et Lp. 473-11 du Code du Travail de Nouvelle-Calédonie (contribution annuelle)
+      href: https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/7388DD772A16E5544B25755E007A9AF0/$File/Loi-du-pays_2009-1_du_07-01-2009.pdf
+
+

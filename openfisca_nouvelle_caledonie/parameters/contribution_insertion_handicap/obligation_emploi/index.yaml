@@ -1,0 +1,24 @@
+description: >
+  Paramètres de l'obligation d'emploi de travailleurs handicapés en Nouvelle-Calédonie.
+  
+  Ces paramètres définissent les modalités de l'obligation d'emploi imposée aux entreprises
+  de plus de 20 salariés pour recruter des personnes en situation de handicap, ainsi que
+  les modes alternatifs de mise en œuvre (contrats de services, mise à disposition, contribution financière).
+metadata:
+  short_label: OETH - Obligation d'emploi de travailleurs handicapés
+  label_en: Employment obligation for disabled workers
+  order:
+  - seuil_effectif
+  - taux_beneficiaires
+  - minimum_fraction
+  - heures_reference
+  - diviseur_unite_contrat_services
+  - diviseur_unite_contrat_disposition
+  - multiplicateur_contribution
+  - taux_horaire_smg
+  - taux_horaire_smag
+  reference:
+    2009-01-07:
+      title: Chapitre III du Livre IV du Code du Travail de Nouvelle-Calédonie - Obligation d'emploi
+      href: https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/7388DD772A16E5544B25755E007A9AF0/$File/Loi-du-pays_2009-1_du_07-01-2009.pdf
+
